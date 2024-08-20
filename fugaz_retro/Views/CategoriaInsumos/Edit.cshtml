@@ -1,0 +1,77 @@
+﻿@model fugaz_retro.Models.CategoriaInsumo
+
+@{
+    ViewData["Title"] = "Editar/Categoria";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="tbl">
+<h1>Editar categoria Insumo</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdCategoria" />
+            <div class="form-group">
+                <label asp-for="NombreCategoria" class="control-label"></label>
+                <input asp-for="NombreCategoria" class="form-control" />
+                <span asp-validation-for="NombreCategoria" class="text-danger"></span>
+            </div>
+                <div class="form-group form-check form-switch">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="EstadoCategoria" /> @Html.DisplayNameFor(model => model.EstadoCategoria) 
+                    </label>
+                </div>
+            <div class="form-group">
+                    <input type="submit" value="Guardar" class="btn btn-sm btn-primary" />
+                    <a asp-action="Index" class="btn btn-sm btn-secondary">Regresar</a>
+                </div>
+        </form>
+    </div>
+</div>
+<br />
+
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        // Escuchar el evento submit del formulario
+        document.querySelector('form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evitar el envío del formulario por defecto
+
+            // Realizar la petición AJAX para enviar los datos del formulario
+            fetch(this.action, {
+                method: this.method,
+                body: new FormData(this)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Mostrar alerta de éxito
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: 'El categoría se ha editado correctamente.'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '@Url.Action("Index")';
+                            }
+                        });
+                    } else {
+                        // Si hay algún error, mostrar mensaje de error
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error!',
+                            text: 'Hubo un problema al crear el rol.'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+}

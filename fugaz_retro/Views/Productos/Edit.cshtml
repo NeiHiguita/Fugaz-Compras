@@ -1,0 +1,131 @@
+﻿@model fugaz_retro.Models.Producto
+
+@{
+    ViewData["Title"] = "Editar Producto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tbl">
+    <h1>Editar Producto</h1>
+    <hr />
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="IdProducto" />
+        <div class="row">
+            <div class="col-sm-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="NombreProducto" class="control-label"></label>
+                    <input asp-for="NombreProducto" class="form-control" />
+                    <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PrecioVenta" class="control-label"></label>
+                    <input asp-for="PrecioVenta" class="form-control" />
+                    <span asp-validation-for="PrecioVenta" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="Foto" class="control-label">Foto Producto</label>
+                    <input type="file" class="form-control" name="Foto" id="Foto" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoriaProducto" class="control-label">Selecciona una categoría:</label>
+                    <select asp-for="CategoriaProducto" class="form-control">
+                        <option value="vestidos">Vestidos</option>
+                        <option value="faldas">Faldas</option>
+                        <option value="mom_pats">Mom Pats</option>
+                        <option value="conjuntos">Conjuntos</option>
+                        <option value="crop_tops">Crop Tops</option>
+                        <option value="shorts">Shorts</option>
+                        <option value="blusas">Blusas</option>
+                    </select>
+                    <span asp-validation-for="CategoriaProducto" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Estado" class="control-label">Estado</label>
+                    <select asp-for="Estado" class="form-control">
+                        <option value="">Seleccionar Estado</option>
+                        <option value="Disponible">Disponible</option>
+                        <option value="No Disponible">No Disponible</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <img class="imgproduct" id="FotoPreview" src="@("data:image;base64," + (Model.Foto != null ? Convert.ToBase64String(Model.Foto) : ""))" alt="Foto Producto" style="max-width: 200px; max-height: 200px; display: @(Model.Foto != null && Model.Foto.Length > 0 ? "block" : "none");" />
+            </div>
+        </div>
+
+        <h4>Detalles del Producto</h4>
+        <table class="table table-striped table-bordered" id="detallesTable">
+            <thead>
+                <tr>
+                    <th>Talla</th>
+                    <th>Color</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int index = 0;
+                }
+
+                @foreach (var detalle in Model.DetalleProductos)
+                {
+                    <tr class="detalleProducto" data-detalle-id="@index">
+                        <td>
+                            <input type="hidden" name="DetalleProductos[@index].IdDetalle" value="@detalle.IdDetalleProducto" />
+                            <input type="text" name="DetalleProductos[@index].Talla" class="form-control" value="@detalle.Talla" />
+                        </td>
+                        <td>
+                            <input type="text" name="DetalleProductos[@index].Color" class="form-control" value="@detalle.Color" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm remove-detail">Eliminar</button>
+                        </td>
+                    </tr>
+                    index++;
+                }
+
+            </tbody>
+        </table>
+
+        <div class="form-group-botones">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+            <button type="button" class="btn btn-primary" id="addDetail">Añadir Detalle</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#addDetail').click(function () {
+                var newRow = $('.detalleProducto:first').clone();
+                var newId = $('.detalleProducto').length;
+                newRow.find('input[name^="DetalleProductos"]').each(function () {
+                    var nameAttr = $(this).attr('name');
+                    var newNameAttr = nameAttr.replace(/\[\d+\]/, '[' + newId + ']');
+                    $(this).attr('name', newNameAttr).val('');
+                });
+                newRow.attr('data-detalle-id', newId);
+                newRow.appendTo('#detallesTable tbody');
+            });
+
+            $(document).on('click', '.remove-detail', function () {
+                $(this).closest('tr').remove();
+            });
+
+            $('input[type="file"]').change(function (e) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#FotoPreview').attr('src', e.target.result).show();
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+        });
+
+    </script>
+}

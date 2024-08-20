@@ -1,0 +1,84 @@
+﻿@model fugaz_retro.Models.RolPermiso
+
+@{
+    ViewData["Title"] = "Asociar permisos a un rol";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<div class="tbl">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="IdRol" class="control-label">Rol:</label>
+                    <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Permisos:</label>
+                    <div>
+                        @foreach (var permiso in (List<fugaz_retro.Models.Permiso>)ViewBag.Permisos)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="permisosSeleccionados" value="@permiso.IdPermiso" id="permiso_@permiso.IdPermiso" />
+                                <label class="form-check-label" for="permiso_@permiso.IdPermiso">
+                                    @permiso.NombrePermiso
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Crear" class="btn btn-sm btn-primary" />
+                    <a asp-action="Index" class="btn btn-sm btn-secondary">Regresar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        document.querySelector('form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evitar el envío del formulario por defecto
+
+            // Realizar la petición AJAX para enviar los datos del formulario
+            fetch(this.action, {
+                method: this.method,
+                body: new FormData(this)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: 'La asociación de permisos se ha creado correctamente.'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '@Url.Action("Index")';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error!',
+                            text: 'Hubo un problema al crear la asociación de permisos.'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+}

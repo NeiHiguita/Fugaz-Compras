@@ -1,0 +1,78 @@
+﻿@model fugaz_retro.Models.Venta
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="tbl">
+    <h1>Editar</h1>
+
+    <h4>Ventas</h4>
+    <hr />
+
+    <form id="editForm" asp-action="Edit">
+        <div class="row">
+            <div class="col-md-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="IdVenta" />
+
+                <div class="form-group">
+                    <label asp-for="IdPedido" class="control-label"></label>
+                    <select asp-for="IdPedido" class="form-control" asp-items="ViewBag.IdPedido"></select>
+                    <span asp-validation-for="IdPedido" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="form-group">
+                    <br />
+                    <input type="submit" value="Guardar" class="btn btn-sm btn-primary" />
+                    <a asp-action="Index" class="btn btn-sm btn-secondary">Regresar</a>
+                </div>
+    </form>
+    <br />
+</div>
+
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        // Escuchar el evento submit del formulario
+        document.getElementById('editForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evitar el envío del formulario por defecto
+
+            // Realizar la petición AJAX para enviar los datos del formulario
+            fetch(this.action, {
+                method: this.method,
+                body: new FormData(this)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Mostrar alerta de éxito
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: 'Se ha actualizado correctamente.'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '@Url.Action("Index")';
+                            }
+                        });
+                    } else {
+                        // Si hay algún error, mostrar mensaje de error
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error!',
+                            text: 'Hubo un problema al guardar los cambios de las ventas'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+}

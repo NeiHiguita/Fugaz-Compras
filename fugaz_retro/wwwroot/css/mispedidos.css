@@ -1,0 +1,222 @@
+﻿.UserBody {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    right: 8%;
+}
+
+#pedidos-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.outer-card.mis-pedidos {
+    margin-bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding: 10px;
+}
+
+    .outer-card.mis-pedidos:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+/* Estilos para la tarjeta interior */
+.inner-card.card {
+    border: 1px solid #dee2e6;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+    .inner-card.card:hover {
+        transform: translateY(-5px);
+    }
+
+.inner-card .card-title.mis-pedidos {
+    color: #442024;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.inner-card .card-body {
+    padding: 0;
+}
+
+.inner-card .btn-details.btn.mis-pedidos,
+.inner-card .btn-cancelar.btn.btn-danger.mis-pedidos {
+    margin-top: 10px;
+    background-color: #874e4c;
+    border: none;
+    color: white;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+    .inner-card .btn-details.btn.mis-pedidos:hover,
+    .inner-card .btn-cancelar.btn.btn-danger.mis-pedidos:hover {
+        background-color: #6e3e3b;
+        border-color: #6e3e3b;
+    }
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #874e4c;
+    animation: fadeInTitle 1s ease-in-out;
+    position: relative;
+}
+
+@keyframes fadeInTitle {
+    0% {
+        opacity: 0;
+        top: -10px;
+    }
+
+    100% {
+        opacity: 1;
+        top: 0;
+    }
+}
+
+.btn-custom {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    border: none;
+    margin-right: 20px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+    .btn-custom:hover {
+        background-color: #333;
+        transform: scale(1.05);
+    }
+
+.pedido-item {
+    margin-bottom: 20px;
+}
+
+    .pedido-item:hover {
+        transform: translateY(-10px);
+    }
+
+    .pedido-item p {
+        margin: 5px 0;
+        color: #555;
+        font-size: 14px;
+    }
+
+.filter-label {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #874e4c;
+}
+
+.filter-select {
+    width: 150px;
+    max-width: 100%;
+    border-color: #874e4c;
+    transition: border-color 0.3s;
+}
+
+    .filter-select:focus {
+        border-color: #6e3e3b;
+    }
+
+.filter-option[selected] {
+    background-color: #eabcac;
+}
+
+.filter-option {
+    transition: background-color 0.3s;
+}
+
+    .filter-option:hover {
+        background-color: #eabcac !important;
+        cursor: pointer;
+    }
+
+.anulado {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    opacity: 0.8;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
+
+.modal-header {
+    background-color: #f7dfd4;
+    color: black;
+    border-bottom: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    background-color: #f7dfd4;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top: none;
+}
+
+    .modal-footer .btn {
+        background-color: #874e4c;
+        color: #fff;
+        border-color: #eabcac;
+        padding: 0.5rem 1.5rem;
+    }
+
+        .modal-footer .btn:hover {
+            background-color: #d4a79f;
+            border-color: #d4a79f;
+            color: black;
+        }
+
+.modal-content h5 {
+    font-size: 20px;
+    color: #442024;
+    margin-bottom: 10px;
+}
+#comprobantePagoContainer img {
+    padding: 30px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 768px) {
+    #pedidos-container .col-lg-4 {
+        flex: 0 0 calc(33.333333% - 1rem);
+        max-width: calc(33.333333% - 1rem);
+    }
+}

@@ -1,0 +1,67 @@
+﻿@model fugaz_retro.Models.Usuario
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style ="margin-top:30px;" class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmación de Eliminación</h5>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que quieres eliminar este usuario?
+                <div>
+                    <hr />
+                    <dl class="row">
+                        <dt class="col-sm-6">
+                            Nombre del usuario:
+                        </dt>
+                        <dd class="col-sm-12">
+                            @Html.DisplayFor(model => model.NombreUsuario)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnConfirmDelete">Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-none">
+    <h4>Usuario</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Nombre del usuario:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NombreUsuario)
+        </dd>
+        <!-- Agrega otros campos del modelo aquí -->
+    </dl>
+
+    <form id="deleteForm" asp-action="Delete" method="post">
+        <input type="hidden" asp-for="IdUsuario" />
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Mostrar la ventana modal al cargar la página
+            $('#confirmModal').modal('show');
+
+            $('#btnConfirmDelete').click(function () {
+                // Envía el formulario de eliminación cuando se confirma la eliminación
+                $('#deleteForm').submit();
+            });
+        });
+    </script>
+}

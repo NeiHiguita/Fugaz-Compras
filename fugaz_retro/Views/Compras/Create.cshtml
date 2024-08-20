@@ -1,0 +1,176 @@
+@model fugaz_retro.Models.Compra
+
+@{
+    ViewData["Title"] = "Crear Compra";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tbl">
+    <h1>@ViewData["Title"]</h1>
+    <hr />
+    <div class="container">
+        <form asp-action="Create" method="post">
+            <div class="row">
+                <!-- Tipo de Proveedor -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="TipoProveedor">Tipo de Proveedor</label>
+                        <select id="TipoProveedor" name="TipoProveedor" class="form-control">
+                            <option value="">Selecciona tipo de proveedor</option>
+                            <option value="Jurídico">Jurídico</option>
+                            <option value="Natural">Natural</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Proveedor -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="IdProveedor" class="control-label">Proveedor</label>
+                        <select asp-for="IdProveedor" class="form-control" id="IdProveedor" name="IdProveedor">
+                            <!-- Los proveedores se cargan dinámicamente -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen de Compra -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Subtotal" class="control-label">Subtotal</label>
+                        <input asp-for="Subtotal" id="subtotal" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Subtotal" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Descuento" class="control-label">Descuento</label>
+                        <input asp-for="Descuento" id="descuento" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="Descuento" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="PrecioTotal" class="control-label">Precio Total</label>
+                        <input asp-for="PrecioTotal" id="precioTotal" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="PrecioTotal" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="FechaCompra" class="control-label">Fecha de Compra</label>
+                        <input asp-for="FechaCompra" type="date" class="form-control" id="fechaCompra" />
+                        <span asp-validation-for="FechaCompra" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Detalles de Compra -->
+            <h3>Detalles de la Compra</h3>
+            <table class="table table-bordered" id="detallesTable">
+                <thead>
+                    <tr>
+                        <th>Insumo</th>
+                        <th>Cantidad</th>
+                        <th>Unidad de Medida</th>
+                        <th>Precio Unitario</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.DetalleCompras.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <select name="DetalleCompras[@i].IdInsumo" class="form-control">
+                                    <option value="">Selecciona insumo</option>
+                                    @foreach (var insumo in ViewBag.Insumos)
+                                    {
+                                        <option value="@insumo.IdInsumo">@insumo.NombreInsumo</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" name="DetalleCompras[@i].Cantidad" class="form-control" step="0.01" />
+                            </td>
+                            <td>
+                                <input type="text" name="DetalleCompras[@i].UnidadMedida" class="form-control" />
+                            </td>
+                            <td>
+                                <input type="number" name="DetalleCompras[@i].PrecioUnitario" class="form-control" step="0.01" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">Eliminar</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" onclick="agregarFila()">Agregar Detalle</button>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Crear</button>
+                <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function agregarFila() {
+            var table = document.getElementById("detallesTable").getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+
+            row.innerHTML = `
+                                <tr>
+                                    <td>
+                                        <select name="DetalleCompras[${rowCount}].IdInsumo" class="form-control">
+                                            <option value="">Selecciona insumo</option>
+        @foreach (var insumo in ViewBag.Insumos)
+        {
+                                                        <option value="@insumo.IdInsumo">@insumo.NombreInsumo</option>
+        }
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="DetalleCompras[${rowCount}].Cantidad" class="form-control" step="0.01" />
+                                    </td>
+                                    <td>
+                                        <input type="text" name="DetalleCompras[${rowCount}].UnidadMedida" class="form-control" />
+                                    </td>
+                                    <td>
+                                        <input type="number" name="DetalleCompras[${rowCount}].PrecioUnitario" class="form-control" step="0.01" />
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">Eliminar</button>
+                                    </td>
+                                </tr>
+                            `;
+        }
+
+        function eliminarFila(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        function obtenerFechaHoy() {
+            var hoy = new Date();
+            var dia = hoy.getDate();
+            var mes = hoy.getMonth() + 1;
+            var año = hoy.getFullYear();
+
+            if (dia < 10) dia = '0' + dia;
+            if (mes < 10) mes = '0' + mes;
+
+            return año + '-' + mes + '-' + dia;
+        }
+
+        document.getElementById("fechaCompra").value = obtenerFechaHoy();
+    </script>
+}

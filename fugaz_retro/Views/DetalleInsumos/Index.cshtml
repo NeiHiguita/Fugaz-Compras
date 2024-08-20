@@ -1,0 +1,48 @@
+﻿@model IEnumerable<fugaz_retro.Models.DetalleInsumo>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="tbl">
+<h1>Detalle del Insumo del Detalle de Producto</h1>
+
+    <div class="row mb-3">
+        <div class="col">
+            <a asp-action="Create" class="btn btn-success">Crear Nuevo <img src="/Images/agregar.png" height="24px" alt="Agregar" /></a>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered" id="Table">
+        <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Insumo.NombreInsumo)
+            </th>
+            <th>
+                Producto (Color)
+            </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cantidad)
+                </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Insumo.NombreInsumo)
+                </td>
+                
+                    <td>
+                    @Html.DisplayFor(modelItem => item.DetalleProducto.Producto.NombreProducto) - @Html.DisplayFor(modelItem => item.DetalleProducto.Color)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cantidad)
+                    </td>
+             
+            </tr>
+        }
+    </tbody>
+</table>
+</div>

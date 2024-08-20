@@ -1,0 +1,101 @@
+﻿@model fugaz_retro.Models.Usuario
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="tbl">
+    <h4>Usuario</h4>
+    <form asp-action="Create">
+        <div class="row">
+            <div class="col-sm-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="Estado" type="hidden" value="true" />
+                <div class="form-group">
+                    <label asp-for="IdRol" class="control-label">Rol</label>
+                    <select asp-for="IdRol" class="form-control" asp-items="ViewBag.IdRol" id="roleSelect">
+                    </select>
+                    <span asp-validation-for="IdRol" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NombreUsuario" class="control-label">Nombre del Usuario</label>
+                    <input asp-for="NombreUsuario" class="form-control" />
+                    <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Correo" class="control-label">Correo</label>
+                    <input asp-for="Correo" type="email" class="form-control" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label asp-for="Contraseña" class="control-label">Contraseña</label>
+                    <div class="input-group">
+                        <input asp-for="Contraseña" type="password" class="form-control" id="passwordInput" />
+                        <span class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fas fa-eye-slash" id="eyeIcon"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <span asp-validation-for="Contraseña" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Document" class="control-label">Documento</label>
+                    <input asp-for="Document" class="form-control" />
+                    <span asp-validation-for="Document" class="text-danger"></span>
+                </div>
+                <div class="form-group" id="telefonoField" style="display:none;">
+                    <label class="control-label">Teléfono</label>
+                    <input name="Telefono" class="form-control" id="telefonoInput" />
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-group">
+            <input type="submit" value="Crear" class="btn btn-sm btn-primary" />
+            <a asp-action="Index" class="btn btn-sm btn-secondary">Regresar</a>
+        </div>
+    </form>
+    <br />
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            var passwordInput = document.getElementById('passwordInput');
+            var eyeIcon = document.getElementById('eyeIcon');
+
+            if (passwordInput.type === 'text') {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        });
+
+        document.getElementById('roleSelect').addEventListener('change', function () {
+            var roleSelect = document.getElementById('roleSelect');
+            var telefonoField = document.getElementById('telefonoField');
+            var telefonoInput = document.getElementById('telefonoInput');
+            var selectedRole = roleSelect.options[roleSelect.selectedIndex].text;
+
+            if (selectedRole == 'Cliente') {
+                telefonoField.style.display = 'block';
+                telefonoInput.value = '';
+            } else {
+                telefonoField.style.display = 'none';
+                telefonoInput.value = 'N/A';
+            }
+        });
+
+        document.getElementById('roleSelect').dispatchEvent(new Event('change'));
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

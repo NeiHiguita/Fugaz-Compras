@@ -1,0 +1,79 @@
+﻿@model fugaz_retro.Models.Pedido
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="tbl" id="pedido-content">
+    <h1>Detalles del Pedido</h1>
+    <hr />
+    <dl class="row">
+        <div class="col-md-6">
+            <dt class="col-sm-2">Cliente</dt>
+            <dd class="col-sm-10">@ViewBag.ClienteNombre</dd>
+            <dt class="col-sm-2">Estado</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.Estado)</dd>
+            <dt class="col-sm-4">Metodo de pago</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.MetodoPago)</dd>
+            <dt class="col-sm-4">Fecha Pedido</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.FechaPedido)</dd>
+            
+        </div>
+        <div class="col-md-6">
+            <dt class="col-sm-4">Fecha Entrega</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.FechaEntrega)</dd>
+            <dt class="col-sm-4">Costo Pedido</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.CostoPedido)</dd>
+            <dt class="col-sm-4">Costo envío</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.CostoEnvio)</dd>
+            <dt class="col-sm-2">Descuento</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.Descuento)</dd>
+            <dt class="col-sm-4">Total Pedido</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.TotalPedido)</dd>
+            @if (ViewBag.ComprobantePago != null)
+            {
+                <dd class="col-sm-10">
+                    <img src="@ViewBag.ComprobantePago" alt="Comprobante de Pago" style="max-width: 100%; height: auto;" />
+                </dd>
+            }
+        </div>
+    </dl>
+    <div>
+        <a asp-action="Index" class="btn btn-sm btn-secondary">Regresar</a>
+        <button id="generate-pdf" class="btn btn-primary">Generar PDF</button>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#generate-pdf').click(function () {
+                html2canvas(document.querySelector('#pedido-content')).then(canvas => {
+                    let imgData = canvas.toDataURL('image/png');
+                    let pdf = new jsPDF('p', 'mm', 'a4');
+                    let imgWidth = 210;
+                    let pageHeight = 295;
+                    let imgHeight = canvas.height * imgWidth / canvas.width;
+                    let heightLeft = imgHeight;
+
+                    let position = 0;
+
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                    pdf.save('pedido.pdf');
+                });
+            });
+        });
+    </script>
+}

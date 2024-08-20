@@ -1,0 +1,18 @@
+﻿@model fugaz_retro.Models.Producto
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<h1>Eliminar</h1>
+
+<h3>¿Estás seguro que deseas eliminar este producto?</h3>
+<div>
+    <h4>Nombre: @Html.DisplayFor(model => model.NombreProducto)</h4>
+    <h4>Precio de Venta: @Html.DisplayFor(model => model.PrecioVenta)</h4>
+</div>
+<form asp-action="Delete">
+    <input type="hidden" asp-for="IdProducto" />
+    <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+    <a asp-action="Index">Cancelar</a>
+</form>

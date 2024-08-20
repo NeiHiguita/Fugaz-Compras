@@ -1,0 +1,26 @@
+﻿@model fugaz_retro.Models.Venta
+
+<div class="tbl">
+    <h1>Detalles del Cliente: @ViewBag.NombreCliente</h1>
+
+    <table class="table table-striped table-bordered text-center">
+        <thead>
+            <tr>
+                <th>Fecha del Pedido</th>
+                <th>Fecha de Entrega del Pedido</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pedido in ViewBag.PedidosEntregados)
+            {
+                <tr>
+                    <td>@pedido.FechaPedido</td>
+                    <td>@pedido.FechaEntrega</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <a asp-action="Index" class="btn btn-sm btn-secondary">Regresar</a>
+    </div>
+</div>

@@ -1,0 +1,155 @@
+﻿@model IEnumerable<fugaz_retro.Models.DetallePedido>
+
+@{
+    ViewData["Title"] = "Mis pedidos";
+    var estadoSeleccionado = ViewBag.Estado as string;
+    var fechaActual = DateTime.Now;
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/mispedidos.css" asp-append-version="true" />
+}
+<body style="background: #ffffff;overflow-y:scroll;">
+
+<div class="UserBody mis-pedidos-page">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="page-title mis-pedidos">@ViewData["Title"]</h1>
+        <form asp-controller="Home" asp-action="HistorialPedidos" method="get" class="form-inline">
+            <a asp-controller="Home" asp-action="HistorialPedidos" class="btn btn-secondary mr-2 btn-custom mis-pedidos">Ver Historial</a>
+        </form>
+    </div>
+
+    <div id="pedidos-container" class="row">
+        @foreach (var grupoPedido in Model.GroupBy(dp => dp.IdPedidoNavigation.IdPedido))
+        {
+            var primerDetalle = grupoPedido.First();
+            var diasDesdePedido = (fechaActual - primerDetalle.IdPedidoNavigation.FechaPedido).Days;
+            bool habilitarAnulacion = diasDesdePedido <= 2 && primerDetalle.IdPedidoNavigation.Estado == "En proceso";
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="outer-card mis-pedidos">
+                    <div class="inner-card card mb-4">
+                        <div class="card-body">
+                            <h2 class="card-title mis-pedidos">Pedido </h2>
+                            <p class="card-text mis-pedidos">Fecha de Pedido: @primerDetalle.IdPedidoNavigation.FechaPedido.ToString("dd/MM/yyyy")</p>
+                            <p class="card-text mis-pedidos">Fecha de Entrega: @primerDetalle.IdPedidoNavigation.FechaEntrega.ToString("dd/MM/yyyy")</p>
+                            <p class="card-text estado mis-pedidos">Estado: @primerDetalle.IdPedidoNavigation.Estado</p>
+                            <p class="card-text estado mis-pedidos">Metodo Pago: @primerDetalle.IdPedidoNavigation.MetodoPago</p>
+                            <p class="card-text mis-pedidos">Total: $@primerDetalle.IdPedidoNavigation.TotalPedido</p>
+                            <button class="btn-details btn mis-pedidos"
+                                    data-id="@primerDetalle.IdPedidoNavigation.IdPedido"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#pedidoModal">
+                                Ver detalles
+                            </button>
+                            @if (habilitarAnulacion)
+                            {
+                                <button class="btn-cancelar btn btn-danger mis-pedidos"
+                                        data-id="@primerDetalle.IdPedidoNavigation.IdPedido"
+                                        onclick="anularPedido(@primerDetalle.IdPedidoNavigation.IdPedido)">
+                                    Anular
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="pedidoModal" tabindex="-1" aria-labelledby="pedidoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pedidoModalLabel">Detalles del Pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="detallesPedidos">
+                    </div>
+                </div>
+                <div id="comprobantePagoContainer" style="display:none;">
+                    <h5>Comprobante de Pago</h5>
+                    <img id="comprobantePagoImg" class="img-fluid" src="#" alt="Comprobante de Pago">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn " data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+@section Scripts {
+    <script>
+        function anularPedido(idPedido) {
+            if (confirm("¿Está seguro de que desea anular este pedido?")) {
+                $.ajax({
+                    url: '@Url.Action("AnularPedido", "Home")',
+                    type: 'POST',
+                    data: { idPedido: idPedido },
+                    success: function (result) {
+                        if (result.success) {
+                            location.reload();
+                        } else {
+                            alert("No se pudo anular el pedido.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error al anular el pedido.");
+                    }
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            $('#pedidoModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Botón que activó el modal
+                var pedidoId = button.data('id'); // Obtener el data-id del botón
+
+                // Limpiar contenido previo
+                var detallesPedidosElem = $('#detallesPedidos');
+                detallesPedidosElem.empty();
+
+                // Ocultar el contenedor del comprobante de pago
+                $('#comprobantePagoContainer').hide();
+
+                // Obtener detalles del pedido correspondiente usando AJAX
+                $.ajax({
+                    url: '@Url.Action("DetallesPedido", "Home")',
+                    type: 'GET',
+                    data: { pedidoId: pedidoId },
+                    success: function (result) {
+                        // Construir HTML de detalles del pedido
+                        result.forEach(function (detalle, index) {
+                            var detalleHTML = `
+                                <div class="pedido-detalle">
+                                    <h5>Detalle del Pedido ${index + 1}</h5>
+                                    <p><strong>Cantidad:</strong> ${detalle.cantidad}</p>
+                                    <p><strong>Talla:</strong> ${detalle.talla}</p>
+                                    <p><strong>Color:</strong> ${detalle.color}</p>
+                                    <p><strong>Subtotal:</strong> $${detalle.subtotal}</p>
+                                    <hr>
+                                </div>
+                            `;
+                            detallesPedidosElem.append(detalleHTML);
+                        });
+
+                        // Mostrar el comprobante de pago si existe
+                        if (result.length > 0 && result[0].comprobantePago != null) {
+                            var comprobantePagoImg = $('#comprobantePagoImg');
+                            var comprobantePagoContainer = $('#comprobantePagoContainer');
+
+                            // Configurar la imagen del comprobante de pago
+                            comprobantePagoImg.attr('src', 'data:image/jpeg;base64,' + result[0].comprobantePago);
+                            comprobantePagoContainer.show(); // Mostrar el contenedor del comprobante de pago
+                        }
+                    },
+                    error: function () {
+                        alert("Error al cargar los detalles del pedido.");
+                    }
+                });
+            });
+        });
+    </script>
+}

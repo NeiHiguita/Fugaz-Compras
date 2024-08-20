@@ -1,0 +1,136 @@
+﻿@model fugaz_retro.Models.Insumo
+
+@{
+    ViewData["Title"] = "Editar Insumo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tbl">
+    <h1>Editar Insumo</h1>
+    <hr />
+
+    <form id="editForm" asp-action="Edit">
+        <div class="row">
+            <div class="col-md-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="IdInsumo" />
+
+                <div class="form-group">
+                    <label asp-for="IdCategoria" class="control-label">Nombre Categoría</label>
+                    <select asp-for="IdCategoria" class="form-control" asp-items="ViewBag.Categorias"></select>
+                    <span asp-validation-for="IdCategoria" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="NombreInsumo" class="control-label">Nombre Insumo</label>
+                    <input asp-for="NombreInsumo" class="form-control" />
+                    <span asp-validation-for="NombreInsumo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UnidadMedida" class="control-label">Unidad Medida</label>
+                    <input asp-for="UnidadMedida" class="form-control" />
+                    <span asp-validation-for="UnidadMedida" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Descripcion" class="control-label">Descripción</label>
+                    <input asp-for="Descripcion" class="form-control" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Estado" class="control-label">Estado</label>
+                    <input asp-for="Estado" class="form-control" id="estadoInput" readonly style="border-color: @((Model.Stock > 3) ? "green" : "red")" />
+                </div>
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        // Escuchar el evento submit del formulario
+        document.getElementById("editForm").addEventListener('submit', function (event) {
+            event.preventDefault(); // Evitar el envío del formulario por defecto
+
+            // Validar campos vacíos
+            var isValid = true;
+            var errorMessage = "";
+
+            // Validar categoría
+            if (!$("select[name='IdCategoria']").val()) {
+                isValid = false;
+                errorMessage += "La categoría es obligatoria.<br/>";
+            }
+
+            // Validar nombre del insumo
+            if (!$("input[name='NombreInsumo']").val()) {
+                isValid = false;
+                errorMessage += "El nombre del insumo es obligatorio.<br/>";
+            }
+
+            // Validar unidad de medida
+            if (!$("input[name='UnidadMedida']").val()) {
+                isValid = false;
+                errorMessage += "La unidad de medida es obligatoria.<br/>";
+            }
+
+            // Aquí no se valida la descripción porque puede estar vacía
+
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Campos obligatorios',
+                    html: errorMessage
+                });
+                return;
+            }
+
+            // Realizar la petición AJAX para enviar los datos del formulario
+            fetch(this.action, {
+                method: this.method,
+                body: new FormData(this)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: 'El insumo se ha editado correctamente.'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '@Url.Action("Index")';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error!',
+                            text: 'Hubo un problema al editar el insumo.'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '¡Error!',
+                        text: 'Hubo un problema al editar el insumo.'
+                    });
+                });
+        });
+    </script>
+}

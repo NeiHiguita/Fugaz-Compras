@@ -1,0 +1,56 @@
+﻿@model fugaz_retro.Models.Cliente
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="margin-top:30px;" class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmación de Eliminación</h5>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que quieres eliminar este cliente?
+                <div>
+                    <hr />
+  
+                        <p>
+                            @Html.DisplayNameFor(model => model.Usuarios.NombreUsuario)
+                        </p>
+                
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnConfirmDelete">Eliminar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="d-none">
+
+    
+    <form id="deleteForm" asp-action="Delete" method="post">
+        <input type="hidden" asp-for="IdCliente" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Mostrar la ventana modal al cargar la página
+            $('#confirmModal').modal('show');
+
+            $('#btnConfirmDelete').click(function () {
+                // Envía el formulario de eliminación cuando se confirma la eliminación
+                $('#deleteForm').submit();
+            });
+        });
+    </script>
+}

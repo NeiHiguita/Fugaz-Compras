@@ -1,0 +1,98 @@
+﻿@model fugaz_retro.Models.CategoriaInsumo
+
+@{
+    ViewData["Title"] = "Crear Categoria Insumo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<div class="tbl">
+    <h1>Crear Categoría de Insumo</h1>
+    <hr />
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <form asp-action="Create" id="createForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="NombreCategoria" class="control-label">Nombre Categoría</label>
+                    <input asp-for="NombreCategoria" class="form-control" id="nombreCategoriaInput" />
+                    <span asp-validation-for="NombreCategoria" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check form-switch">
+                    <input class="form-check-input" asp-for="EstadoCategoria" id="Estado" data-toggle="switch" data-size="large" data-on-color="success" data-off-color="danger" />
+                    <label class="form-check-label" for="Estado">Estado Categoría</label>
+                </div>
+                <div class="mt-3">
+                    <div class="form-group">
+                        <input type="submit" value="Crear" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            $("#createForm").submit(function (event) {
+                event.preventDefault(); // Prevenir el envío del formulario por defecto
+                var formData = $(this).serialize(); // Serializar los datos del formulario
+                $.ajax({
+                    url: '@Url.Action("Create", "CategoriaInsumos")',
+                    type: 'POST',
+                    data: formData, // Enviar los datos serializados del formulario
+                    success: function (result) {
+                        // Manejar la respuesta del servidor si es necesario
+                        // Por ejemplo, podrías redirigir al usuario a otra página
+                        window.location.href = '@Url.Action("Index", "CategoriaInsumos")';
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+      
+        <script>
+            $(document).ready(function () {
+                $("#createForm").submit(function (event) {
+                    // Validar que solo se ingresen letras en el campo de nombre de categoría
+                    var nombreCategoria = $("#nombreCategoriaInput").val();
+                    if (!/^[A-Za-z\s]+$/.test(nombreCategoria)) {
+                        event.preventDefault(); // Prevenir el envío del formulario
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Por favor, ingrese solo letras en el campo de Nombre de Categoría.'
+                        });
+                    } else {
+                        // Si la validación es exitosa, continuar con el envío del formulario
+                        var formData = $(this).serialize(); // Serializar los datos del formulario
+                        $.ajax({
+                            url: '@Url.Action("Create", "CategoriaInsumos")',
+                            type: 'POST',
+                            data: formData, // Enviar los datos serializados del formulario
+                            success: function (result) {
+                                // Manejar la respuesta del servidor si es necesario
+                                // Por ejemplo, podrías redirigir al usuario a otra página
+                                window.location.href = '@Url.Action("Index", "CategoriaInsumos")';
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    }
+                });
+            });
+    </script>
+}

@@ -1,0 +1,1341 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="~/css/estiloindex.css" />
+
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <title>Fugaz Retro</title>
+
+
+    <style>
+        #contador-productos {
+            font-size: 12px;
+        }
+
+        .container-cart-products {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background-color: #fff;
+            z-index: 9;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.20);
+            border-radius: 10px 0 0 10px;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+            .container-cart-products.show {
+                right: 0;
+            }
+
+        .cart-product {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.20);
+        }
+
+        .info-cart-product {
+            display: flex;
+            justify-content: space-between;
+            flex: 0.8;
+        }
+
+        .titulo-producto-carrito {
+            font-size: 20px;
+        }
+
+        .precio-producto-carrito {
+            font-weight: 700;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+
+        .cantidad-producto-carrito {
+            font-weight: 400;
+            font-size: 20px;
+        }
+
+        .icon-close {
+            width: 25px;
+            height: 25px;
+        }
+
+            .icon-close:hover {
+                stroke: red;
+                cursor: pointer;
+            }
+
+        .cart-total {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            gap: 20px;
+        }
+
+            .cart-total h3 {
+                font-size: 20px;
+                font-weight: 700;
+            }
+
+        .total-pagar {
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .item {
+            border-radius: 10px;
+        }
+
+            .item:hover {
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.20);
+            }
+
+            .item img {
+                width: 100%;
+                height: 300px;
+                object-fit: cover;
+                border-radius: 10px 10px 0 0;
+                transition: all .5s;
+            }
+
+            .item figure {
+                overflow: hidden;
+            }
+
+            .item:hover img {
+                transform: scale(1.2);
+            }
+
+        .info-product {
+            padding: 10px 20px;
+            line-height: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .info-product button {
+            border: none;
+            background: none;
+            background-color: #000;
+            color: #fff;
+            padding: 12px 10px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .cart-empty {
+            padding: 20px;
+            text-align: center;
+            margin-top: 300px;
+        }
+
+        .quantity-decrease,
+        .quantity-increase {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+            .quantity-decrease:hover,
+            .quantity-increase:hover {
+                color: #007bff;
+            }
+
+        .custom-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+            .custom-btn img.cart-icon {
+                margin-right: 8px;
+                width: 20px;
+                height: 20px;
+            }
+
+            .custom-btn:hover {
+                background-color: #333;
+            }
+
+        .btn-close {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+            .btn-close:hover {
+                color: #007bff;
+            }
+
+        .ancar {
+            margin-right: 20px;
+        }
+
+        .color-item,
+        .size-item {
+            cursor: pointer;
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+            .color-item.selected,
+            .size-item.selected {
+                border-color: #007bff;
+                background-color: #007bff;
+                color: #fff;
+            }
+
+        #modal-product-image {
+            background: url('') no-repeat center center;
+            transition: background-size 0.3s ease;
+        }
+
+    </style>
+</head>
+<body style="background: #ffffff;overflow-y:scroll;">
+    <div class="UserBody">
+        <section class="headerandmenu">
+            <div class="menu">
+                <nav class="lista-Menu">
+                    <ul class="categorias">
+                        <li><a href="@Url.Action("Index", "Home")">Inicio</a></li>
+                        <li><a href="@Url.Action("FiltrarPorCategoria", "Home", new { categoria = "Vestidos" })">Vestidos</a></li>
+                        <li><a href="@Url.Action("FiltrarPorCategoria", "Home", new { categoria = "Faldas" })">Faldas</a></li>
+                        <li><a href="@Url.Action("FiltrarPorCategoria", "Home", new { categoria = "Mom_pants" })">Mom pants</a></li>
+                        <li><a href="@Url.Action("FiltrarPorCategoria", "Home", new { categoria = "Conjuntos" })">Conjuntos</a></li>
+                        <li><a href="@Url.Action("FiltrarPorCategoria", "Home", new { categoria = "Crop_tops" })">Crop-tops</a></li>
+                        <li><a href="@Url.Action("FiltrarPorCategoria", "Home", new { categoria = "Shorts" })">Shorts</a></li>
+                        <li><a href="@Url.Action("FiltrarPorCategoria", "Home", new { categoria = "Blusas" })">Blusas</a></li>
+                    </ul>
+                </nav>
+                <div class="container-icon">
+                    <div class="container-cart-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke-width="1.5"
+                             stroke="currentColor"
+                             class="icon-cart">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                        </svg>
+                        <div class="count-products">
+                            <span id="contador-productos">0</span>
+                        </div>
+                    </div>
+                    <!-- ventana lateral del carrito -->
+                    <div class="container-cart-products">
+                        <div class="cart-header" style="margin-top:43px;">
+                            <h2>Carrito de Compra</h2>
+                            <button id="btnCloseCart" class="btn-close-cart">X</button>
+                        </div>
+                        <div class="row-product hidden" style="margin-top:0px;">
+                            <div class="cart-product">
+                                <div class="info-cart-product">
+                                    <span class="cantidad-producto-carrito"></span>
+                                    <p class="titulo-producto-carrito"></p>
+                                    <span class="precio-producto-carrito"></span>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="1.5"
+                                     stroke="currentColor"
+                                     class="icon-close">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="cart-total hidden">
+                            <h3>Total:</h3>
+                            <span class="total-pagar">$200</span>
+                            <button id="btnComprar" class="btn btn-primary">Comprar</button>
+                        </div>
+                        <p class="cart-empty">El carrito está vacío</p>
+                    </div>
+                </div>
+                <div class="busqueda">
+                    <form action="@Url.Action("Buscar", "Home")" method="get">
+                        <input type="text" style="background: none; border: none;" name="query" class="campo-busqueda" placeholder="Buscar productos..." value="@ViewBag.Busqueda">
+                        <div class="icono-lupa">
+                            <button class="lupa" type="submit" style="background: none; border: none;">
+                                <img src="~/Images/vistaUsuario/Icons/search-regular-24.png" alt="">
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br>
+        </section>
+
+        @if (string.IsNullOrEmpty(ViewBag.CategoriaSeleccionada) && string.IsNullOrEmpty(ViewBag.Busqueda))
+        {
+            <section class="slider">
+                <div class="swiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="~/Images/vistaUsuario/Almas Fugaces.png" alt="Almas Fugaces" style="width: 100%;">
+                        </div>
+                        <div class="swiper-slide"><img src="~/Images/vistaUsuario/img1.png" alt="" style="width: 100%;"></div>
+                        <div class="swiper-slide"><img src="~/Images/vistaUsuario/Imagen.png" alt="" style="width: 100%;"></div>
+                        <div class="swiper-slide"><img src="~/Images/vistaUsuario/mas info.png" alt="" style="width: 100%;"></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev" style="color: rgba(255, 255, 255, 0.877);"></div>
+                    <div class="swiper-button-next" style="color: rgba(255, 255, 255, 0.877);"></div>
+                </div>
+            </section>
+        }
+        <section class="cjventas">
+            <h2>Nuevas Tendencias</h2>
+            <div class="container">
+                <div class="row">
+                    <div class="container-items">
+                        @foreach (var producto in Model.Productos)
+                        {
+                            <div class="item">
+                                <figure>
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(producto.Foto)"
+                                         alt="@producto.NombreProducto"
+                                         class="img-fluid btn-details"
+                                         data-id="@producto.IdProducto"
+                                         data-nombre="@producto.NombreProducto"
+                                         data-precio="@producto.PrecioVenta"
+                                         data-foto="data:image/jpeg;base64,@Convert.ToBase64String(producto.Foto)"
+                                         data-toggle="modal"
+                                         data-target="#productModal" />
+                                </figure>
+                                <div class="info-product">
+                                    <h2>@producto.NombreProducto</h2>
+                                    <p class="price">Precio: $@string.Format("{0:N0}", @producto.PrecioVenta)</p>
+                                    <button class="btn-details"
+                                            data-id="@producto.IdProducto"
+                                            data-nombre="@producto.NombreProducto"
+                                            data-precio="@producto.PrecioVenta"
+                                            data-foto="data:image/jpeg;base64,@Convert.ToBase64String(producto.Foto)"
+                                            data-toggle="modal"
+                                            data-target="#productModal">
+                                        Ver detalles
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalLabel">Detalles del producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <figure>
+                                    <img id="modal-product-image" src="" alt="Producto" class="img-fluid imgdell" />
+                                </figure>
+                            </div>
+                            <div class="col-sm-6">
+                                <h2 id="modal-product-name"></h2>
+                                <p id="modal-product-price"></p>
+                                <h3>Colores</h3>
+                                <ul id="modal-product-color"></ul>
+                                <h3>Tallas</h3>
+                                <ul id="modal-product-size"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button class="btn-add-cart-modal custom-btn ancar">
+                                Añadir al carrito
+                            </button>
+                        }
+                        else
+                        {
+                            <a class="custom-btn" id="login" asp-area="Identity" asp-page="/Account/Login">Iniciar sesion para añadir al carrito</a>
+                        }
+
+                        <button type="button" class="custom-btn" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="crearPedidoModal" tabindex="-1" aria-labelledby="crearPedidoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content modal-content-index">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="crearPedidoModalLabel">Crear Pedido</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="pedidoForm" asp-action="CrearPedido" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="nombreCliente" class="form-label">Cliente</label>
+                                                <input type="text" class="form-control" id="nombreCliente" name="NombreCliente" value="@ViewBag.NombreCliente" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="telefonoCliente" class="form-label">Teléfono</label>
+                                                <input type="text" class="form-control" id="telefonoCliente" name="TelefonoCliente" value="@ViewBag.TelefonoCliente" readonly>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="departamento" class="form-label">Departamento</label>
+                                            <select class="form-select" id="departamento" name="Departamento" onchange="actualizarCiudades()">
+                                                <option value="">Seleccione un departamento</option>
+                                                <option value="Antioquia">Antioquia</option>
+                                                <option value="Cundinamarca">Cundinamarca</option>
+                                                <option value="Valle del Cauca">Valle del Cauca</option> <!-- Corregido -->
+                                                <option value="Bolívar">Bolívar</option>
+                                                <option value="Atlántico">Atlántico</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="ciudad" class="form-label">Ciudad</label>
+                                            <select class="form-select" id="ciudad" name="Ciudad">
+                                                <option value="">Seleccione una ciudad</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="direccion" class="form-label">Dirección</label>
+                                        <input type="text" class="form-control" id="direccion" name="Direccion" placeholder="Ingrese su dirección lo más precisa posible">
+                                    </div>
+
+                                    <!-- Fechas y Estado Ocultos -->
+                                    <input type="hidden" id="FechaPedido" name="FechaPedido" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                    <input type="hidden" id="FechaEntrega" name="FechaEntrega" value="@DateTime.Now.AddDays(15).ToString("yyyy-MM-dd")">
+                                    <input type="hidden" id="Estado" name="Estado" value="En proceso">
+
+                                    <div class="row">
+                                        <!-- Columna 1: Información del Cliente y Dirección -->
+                                        <div class="col-md-6">
+                                            <!-- Método de Pago -->
+                                            <div class="mb-3">
+                                                <label for="metodoPago" class="form-label">Método de Pago</label>
+                                                <select class="form-select" id="metodoPago" name="MetodoPago">
+                                                    <option value="Efectivo" class="contraEntrega">Efectivo</option>
+                                                    <option value="Transferencia">Transferencia</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3" id="tipoTransferenciaDiv" style="display: none;">
+                                                <label for="TipoTransferencia" class="form-label">Tipo de Transferencia</label>
+                                                <select class="form-select" id="TipoTransferencia" name="TipoTransferencia">
+                                                    <option value="">Selecciona un medio de pago</option>
+                                                    <option value="Nequi">Nequi</option>
+                                                    <option value="Bancolombia">Bancolombia</option>
+                                                    <option value="Daviplata">Daviplata</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- Comprobante de Pago -->
+                                        <div class="mb-3" id="comprobanteDiv" style="display: none;">
+                                            <label for="comprobantePago" class="form-label">Comprobante de Pago</label>
+                                            <input type="file" class="form-control" id="comprobantePago" name="ComprobantePago" accept="image/*">
+                                        </div>
+                                        <!-- Botón para Ver Comprobante -->
+                                        <div class="mb-3" id="vistaPreviaComprobante" style="display: none;">
+                                            <label for="vistaPreviaImagen" class="form-label">Vista Previa del Comprobante</label>
+                                            <button type="button" id="verComprobanteBtn" class="btn btn-secondary mb-3">Ver Comprobante</button>
+                                            <!-- La imagen ahora está lista para mostrarse sobre la modal -->
+                                            <img id="vistaPreviaImagen" src="#" alt="Vista previa del comprobante" style="display: none;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="productosCarrito" class="form-label">Productos en el Carrito</label>
+                                        <table class="table table-striped table-bordered table-index" id="tablaProductosCarrito">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Producto</th>
+                                                    <th>Color</th>
+                                                    <th>Talla</th>
+                                                    <th>Precio</th>
+                                                    <th>Cantidad</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="CostoPedido">Precio del Pedido</label>
+                                        <input type="text" class="form-control" id="CostoPedido" name="CostoPedido" readonly>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="TotalPedido">Total del Pedido</label>
+                                        <input type="text" class="form-control" id="TotalPedido" name="TotalPedido" readonly>
+                                    </div>
+
+                                    <!-- Mensajes de Pago -->
+                                    <div id="mensajeContraEntrega" class="alert alert-info mb-3 mensaje-pago" style="display: none;">
+                                        <i class="fas fa-info-circle"></i> Su pedido será con entrega "Contra Entrega". Tiene de dos a tres días hábiles para que le llegue.
+                                    </div>
+
+                                    <div class="alert alert-info mb-3 mensaje-pago" id="mensajeNequi" style="display: none;">
+                                        <i class="fas fa-credit-card"></i> Debe consignar el total del pedido a este número: <strong>3024338696</strong> y subir el comprobante de pago para confirmar el pedido.
+                                    </div>
+
+                                    <div class="alert alert-info mb-3 mensaje-pago" id="mensajeBancolombia" style="display: none;">
+                                        <i class="fas fa-credit-card"></i> Debe consignar el total del pedido a la cuenta de ahorros número: <strong>00016789039</strong> y subir el comprobante de pago para confirmar el pedido.
+                                    </div>
+
+                                    <div class="alert alert-info mb-3 mensaje-pago" id="mensajeDaviplata" style="display: none;">
+                                        <i class="fas fa-credit-card"></i> Debe consignar el total del pedido a este número: <strong>0120454790</strong> y subir el comprobante de pago para confirmar el pedido.
+                                    </div>
+
+                                    
+
+                                </div>
+                            </div>
+
+                            <!-- Botón de Envío -->
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Crear Pedido</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+
+            .UserBod {
+                height: 80%;
+                width: 126.3%;
+                margin-left: -189px;
+                top: 80px;
+                position: relative;
+            }
+
+            .footer {
+                background: linear-gradient(to bottom, white, #e7bca1);
+                color: #000;
+                padding: 20px 0;
+            }
+
+                .footer a {
+                    color: #000;
+                    text-decoration: none;
+                }
+
+                    .footer a:hover {
+                        color: #343a40;
+                        text-decoration: none;
+                    }
+
+            .footer-images {
+                display: flex;
+                flex-direction: column; /* Colocar las imágenes en columna */
+                align-items: flex-start; /* Alinearlas a la izquierda */
+                margin-top: 10px; /* Espacio entre el texto y las imágenes */
+            }
+
+            .footer-img {
+                margin: 5px 0; /* Espacio entre las imágenes */
+                height: 40px; /* Tamaño de las imágenes */
+                transition: transform 0.3s;
+            }
+
+                .footer-img:hover {
+                    transform: scale(1.1);
+                }
+
+            .logo-img {
+                display: block;
+                max-width: 100%;
+                height: auto;
+                transition: transform 0.3s;
+            }
+
+                .logo-img:hover {
+                    transform: scale(1.1);
+                }
+
+            .container-fluid {
+                padding: 0 15px;
+            }
+
+            .btn-hover-grow {
+                transition: transform 0.3s; /* Transición suave para el efecto de agrandamiento */
+            }
+
+                .btn-hover-grow:hover {
+                    transform: scale(1.1); /* Agranda el botón al 110% */
+                }
+        </style>
+
+        <footer class="footer pt-5 pb-4 UserBod">
+            <div class="container-fluid text-md-left">
+                <div class="row text-md-left">
+                    <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                        <h5 class="text-uppercase mb-4 font-weight-bold">Fugaz Retro</h5>
+                        <p>Tienda de moda retro para mujeres, donde las <strong>ALMAS FUGACES</strong> encuentran su estilo único.</p>
+                        <button onclick="location.href='@Url.Action("Nosotros", "Home")'" class="btn btn-dark btn-hover-grow">Conoce nuestra historia</button>
+                    </div>
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                        <h5 class="text-uppercase mb-4 font-weight-bold">Medios de Pago</h5>
+                        <div class="footer-images">
+                            <img src="~/images/nequi-Photoroom.png" alt="Nequi" class="footer-img">
+                            <img src="~/images/daviplata.png" alt="Daviplata" class="footer-img">
+                            <img src="~/images/bancolombia-Photoroom.png" alt="Bancolombia" class="footer-img">
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mt-3">
+                        <img src="~/images/fgz.png" alt="Logo" class="logo-img">
+                    </div>
+                </div>
+
+                <hr class="mb-4">
+
+                <div class="row align-items-center">
+                    <div class="col-md-7 col-lg-8">
+                        <p class="text-center text-md-left">
+                            © 2024 Fugaz Retro. Todos los derechos reservados.
+                            <a href="#" class="ml-2">Política de Privacidad</a>
+                            <a href="#" class="ml-2">Términos y Condiciones</a>
+                        </p>
+                    </div>
+                    <div class="col-md-5 col-lg-4">
+                        <div class="text-center text-md-right">
+                            <ul class="list-unstyled list-inline">
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn-floating btn-sm text-black"><i class="fab fa-facebook-f"></i></a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn-floating btn-sm text-black"><i class="fab fa-instagram"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <script>
+            function actualizarCiudades() {
+                const ciudadesPorDepartamento = {
+                    Antioquia: ['Medellín'],
+                    Cundinamarca: ['Bogotá'],
+                    'Valle del Cauca': ['Cali'], // Corregido
+                    Bolívar: ['Cartagena'],
+                    Atlántico: ['Barranquilla']
+                };
+
+                // Obtener los elementos del DOM
+                const selectDepartamento = document.getElementById('departamento');
+                const selectCiudad = document.getElementById('ciudad');
+
+                // Obtener el valor seleccionado del departamento
+                const departamentoSeleccionado = selectDepartamento.value;
+
+                // Limpiar las opciones anteriores de la ciudad
+                selectCiudad.innerHTML = '<option value="">Seleccione una ciudad</option>';
+
+                // Verificar si hay un departamento seleccionado
+                if (departamentoSeleccionado) {
+                    // Obtener las ciudades correspondientes al departamento seleccionado
+                    const ciudades = ciudadesPorDepartamento[departamentoSeleccionado];
+
+                    // Añadir cada ciudad como una nueva opción en el select de ciudades
+                    ciudades.forEach(ciudad => {
+                        const option = document.createElement('option');
+                        option.value = ciudad;
+                        option.textContent = ciudad;
+                        selectCiudad.appendChild(option);
+                    });
+                }
+            }
+            function enviarFormulario() {
+                var form = $('#pedidoForm');
+                var formData = new FormData(form[0]);
+
+                var detallesPedido = [];
+                $('#tablaProductosCarrito tbody tr').each(function () {
+                    var detalle = {
+                        Producto: $(this).find('td:eq(0)').text(),
+                        Color: $(this).find('td:eq(1)').text(),
+                        Talla: $(this).find('td:eq(2)').text(),
+                        Precio: $(this).find('td:eq(3)').text(),
+                        Cantidad: $(this).find('td:eq(4)').text()
+                    };
+                    detallesPedido.push(detalle);
+                });
+                formData.append('detallesPedidoJson', JSON.stringify(detallesPedido));
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        // Manejar respuesta exitosa
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Pedido creado!',
+                                text: 'El pedido se ha creado correctamente.',
+                                showConfirmButton: false,
+                                timer: 2000
+                            }).then(function () {
+                                // Ocultar el modal de creación de pedido
+                                $('#crearPedidoModal').modal('hide');
+                                // Opcional: recargar la página o redirigir a otra página
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'Error al crear el pedido.',
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Manejar errores de la solicitud
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error al crear el pedido.',
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            }
+
+            $('#pedidoForm').submit(function (event) {
+                event.preventDefault();
+
+                const departamento = $('#departamento').val();  // Corrección de nombre
+                const ciudad = $('#ciudad').val();
+                const direccion = $('#direccion').val().trim();
+                const metodoPago = $('#metodoPago').val();
+                const tipoTransferencia = $('#TipoTransferencia').val();
+                const comprobante = $('#comprobantePago').prop('files')[0];
+
+                // Función para mostrar mensajes de error
+                function mostrarError(titulo, mensaje) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: titulo,
+                        text: mensaje,
+                    });
+                }
+
+                // Validación de departamento
+                if (!departamento) {
+                    mostrarError('Campo requerido', 'Por favor, seleccione un departamento.');
+                    return;
+                }
+
+                // Validación de ciudad
+                if (!ciudad) {
+                    mostrarError('Campo requerido', 'Por favor, seleccione una ciudad.');
+                    return;
+                }
+
+                // Validación de dirección
+                if (!direccion) {
+                    mostrarError('Campo requerido', 'Por favor, ingrese una dirección.');
+                    return;
+                }
+
+                // Validación de método de pago
+                if (!metodoPago) {
+                    mostrarError('Campo requerido', 'Por favor, seleccione un método de pago.');
+                    return;
+                }
+
+                // Validaciones específicas para Transferencia
+                if (metodoPago === 'Transferencia') {
+                    if (!tipoTransferencia) {
+                        mostrarError('Campo requerido', 'Por favor, seleccione un tipo de transferencia.');
+                        return;
+                    }
+
+                    if (!comprobante) {
+                        mostrarError('Campo requerido', 'Por favor, suba el comprobante de pago.');
+                        return;
+                    }
+
+                    const validFormats = ['image/jpeg', 'image/png', 'application/pdf'];
+                    if (!validFormats.includes(comprobante.type)) {
+                        mostrarError('Formato inválido', 'Formato de archivo inválido. Solo se permiten imágenes JPG, PNG o PDF.');
+                        return;
+                    }
+
+                    const maxSize = 2 * 1024 * 1024;
+                    if (comprobante.size > maxSize) {
+                        mostrarError('Archivo demasiado grande', 'El tamaño del archivo no debe exceder 2MB.');
+                        return;
+                    }
+                }
+
+                // Confirmación antes de enviar el formulario
+                Swal.fire({
+                    title: '¿Está seguro de crear el pedido?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, crear pedido',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Llamar a la función para enviar el formulario si el usuario confirma
+                        enviarFormulario();
+                    }
+                });
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                var ciudadSelect = document.getElementById('ciudad');
+                var metodoPagoSelect = document.getElementById('metodoPago');
+                var contraEntregaOption = metodoPagoSelect.querySelector('.contraEntrega');
+                var tipoTransferenciaDiv = document.getElementById('tipoTransferenciaDiv');
+                var tipoTransferenciaSelect = document.getElementById('TipoTransferencia');
+                var mensajeContraEntrega = document.getElementById('mensajeContraEntrega');
+                var mensajeNequi = document.getElementById('mensajeNequi');
+                var mensajeBancolombia = document.getElementById('mensajeBancolombia');
+                var mensajeDaviplata = document.getElementById('mensajeDaviplata');
+                const comprobanteDiv = document.getElementById('comprobanteDiv');
+                const vistaPreviaImagen = document.getElementById('vistaPreviaImagen');
+                const verComprobanteBtn = document.getElementById('verComprobanteBtn');
+                const inputFile = document.getElementById('comprobantePago');
+
+                function updateMetodoPagoVisibility() {
+                    if (ciudadSelect.value === 'Medellín') {
+                        contraEntregaOption.style.display = 'block';
+                        contraEntregaOption.disabled = false;
+                        mensajeContraEntrega.style.display = 'block';
+                    } else {
+                        if (metodoPagoSelect.value === 'Efectivo') {
+                            metodoPagoSelect.value = 'Transferencia'; // Cambiar selección a Transferencia si Efectivo está seleccionado
+                        }
+                        contraEntregaOption.style.display = 'none';
+                        contraEntregaOption.disabled = true;
+                        mensajeContraEntrega.style.display = 'none';
+                    }
+                }
+
+                function updateTipoTransferenciaVisibility() {
+                    if (metodoPagoSelect.value === 'Transferencia') {
+                        tipoTransferenciaDiv.style.display = 'block';
+                    } else {
+                        tipoTransferenciaDiv.style.display = 'none';
+                        // Ocultar mensajes de transferencia si el método no es transferencia
+                        ocultarMensajesTransferencia();
+                    }
+                }
+
+                function updateMensajesVisibility() {
+                    if (metodoPagoSelect.value === 'Transferencia') {
+                        var isTransferencia = tipoTransferenciaSelect.value !== '';
+                        comprobanteDiv.style.display = isTransferencia ? 'block' : 'none';
+                        vistaPreviaComprobante.style.display = 'none'; // Ocultar la vista previa al cambiar el tipo de transferencia
+
+                        if (tipoTransferenciaSelect.value === 'Nequi') {
+                            mensajeNequi.style.display = 'block';
+                            mensajeBancolombia.style.display = 'none';
+                            mensajeDaviplata.style.display = 'none';
+                        } else if (tipoTransferenciaSelect.value === 'Bancolombia') {
+                            mensajeNequi.style.display = 'none';
+                            mensajeBancolombia.style.display = 'block';
+                            mensajeDaviplata.style.display = 'none';
+                        } else if (tipoTransferenciaSelect.value === 'Daviplata') {
+                            mensajeNequi.style.display = 'none';
+                            mensajeBancolombia.style.display = 'none';
+                            mensajeDaviplata.style.display = 'block';
+                        } else {
+                            ocultarMensajesTransferencia();
+                        }
+                    } else {
+                        ocultarMensajesTransferencia();
+                    }
+                }
+
+                function ocultarMensajesTransferencia() {
+                    // Ocultar todos los mensajes de transferencia
+                    mensajeNequi.style.display = 'none';
+                    mensajeBancolombia.style.display = 'none';
+                    mensajeDaviplata.style.display = 'none';
+                    comprobanteDiv.style.display = 'none'; // También ocultar el comprobante de transferencia
+                }
+
+                // Mostrar vista previa cuando se selecciona una imagen
+                inputFile.addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            vistaPreviaImagen.src = e.target.result;
+                            document.getElementById('vistaPreviaComprobante').style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                // Mostrar u ocultar la imagen del comprobante
+                verComprobanteBtn.addEventListener('click', function () {
+                    if (vistaPreviaImagen.style.display === 'none') {
+                        vistaPreviaImagen.style.display = 'block';
+                    } else {
+                        vistaPreviaImagen.style.display = 'none';
+                    }
+                });
+
+                // Cerrar la imagen al hacer clic
+                vistaPreviaImagen.addEventListener('click', function () {
+                    this.style.display = 'none';
+                });
+
+                ciudadSelect.addEventListener('change', function () {
+                    updateMetodoPagoVisibility();
+                    updateTipoTransferenciaVisibility();
+                    updateMensajesVisibility();
+                });
+
+                metodoPagoSelect.addEventListener('change', function () {
+                    updateTipoTransferenciaVisibility();
+                    updateMensajesVisibility();
+                });
+
+                tipoTransferenciaSelect.addEventListener('change', function () {
+                    updateMensajesVisibility();
+                });
+
+                // Trigger the change event to set the initial state
+                updateMetodoPagoVisibility();
+                updateTipoTransferenciaVisibility();
+                updateMensajesVisibility();
+            });
+        </script>
+        @* <script>
+        // Esperar a que el DOM esté completamente cargado
+        $(document).ready(function () {
+        // Escuchar el evento 'hidden.bs.modal' de Bootstrap
+        $('#crearPedidoModal').on('hidden.bs.modal', function () {
+        // Actualizar la página después de cerrar la modal
+        location.reload();
+        });
+        });
+        </script> *@
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', () => {
+                const btnCart = document.querySelector('.container-cart-icon');
+                const containerCartProducts = document.querySelector('.container-cart-products');
+                const btnCloseCart = document.querySelector('#btnCloseCart');
+                const rowProduct = document.querySelector('.row-product');
+                const productsList = document.querySelector('.container-items');
+                const valorTotal = document.querySelector('.total-pagar');
+                const countProducts = document.querySelector('#contador-productos');
+                const cartEmpty = document.querySelector('.cart-empty');
+                const cartTotal = document.querySelector('.cart-total');
+
+                let allProducts = [];
+
+                // Toggle cart visibility
+                btnCart.addEventListener('click', () => {
+                    containerCartProducts.classList.toggle('show');
+                });
+
+                // Close cart
+                btnCloseCart.addEventListener('click', () => {
+                    containerCartProducts.classList.remove('show');
+                });
+
+                const updateCart = () => {
+                    if (!allProducts.length) {
+                        cartEmpty.classList.remove('hidden');
+                        rowProduct.classList.add('hidden');
+                        cartTotal.classList.add('hidden');
+                    } else {
+                        cartEmpty.classList.add('hidden');
+                        rowProduct.classList.remove('hidden');
+                        cartTotal.classList.remove('hidden');
+                    }
+                    renderCartProducts();
+                };
+
+                const renderCartProducts = () => {
+                    rowProduct.innerHTML = '';
+                    let total = 0;
+                    let totalOfProducts = 0;
+
+                    allProducts.forEach(product => {
+                        const containerProduct = document.createElement('div');
+                        containerProduct.classList.add('cart-product');
+                        containerProduct.innerHTML = `
+                                            <div class="info-cart-product">
+                                                <p class="titulo-producto-carrito">${product.title}</p>
+                                                <p class="talla-producto-carrito"><strong>Talla:</strong> ${product.size}</p>
+                                                <p class="color-producto-carrito"><strong>Color:</strong> ${product.color}</p>
+                                                <div class="cantidad-producto-carrito">
+                                                    <button class="quantity-decrease">-</button>
+                                                    <span class="quantity-value">${product.quantity}</span>
+                                                    <button class="quantity-increase">+</button>
+                                                </div>
+                                                <span class="precio-producto-carrito">${product.price}</span>
+                                            </div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-close">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        `;
+                        rowProduct.append(containerProduct);
+                        total += product.quantity * parseFloat(product.price.replace(/[^\d.-]/g, ''));
+                        totalOfProducts += product.quantity;
+                    });
+
+                    valorTotal.innerText = `$${total.toFixed(2)}`;
+                    countProducts.innerText = totalOfProducts;
+                };
+
+                const addProductToCart = (title, price, color, size) => {
+                    const infoProduct = {
+                        quantity: 1,
+                        title,
+                        price,
+                        color,
+                        size
+                    };
+
+                    const existingProduct = allProducts.find(product =>
+                        product.title === infoProduct.title && product.color === infoProduct.color && product.size === infoProduct.size
+                    );
+
+                    if (existingProduct) {
+                        existingProduct.quantity++;
+                    } else {
+                        allProducts.push(infoProduct);
+                    }
+                    updateCart();
+                };
+
+                const getProductDetails = (product) => {
+                    return {
+                        title: product.querySelector('.titulo-producto-carrito').textContent,
+                        color: product.querySelector('.color-producto-carrito').textContent.replace('Color:', '').trim(),
+                        size: product.querySelector('.talla-producto-carrito').textContent.replace('Talla:', '').trim()
+                    };
+                };
+
+                const handleQuantityChange = (product, increment) => {
+                    const { title, color, size } = getProductDetails(product);
+
+                    const selectedProduct = allProducts.find(
+                        p => p.title === title && p.color === color && p.size === size
+                    );
+
+                    if (increment) {
+                        selectedProduct.quantity++;
+                    } else {
+                        if (selectedProduct.quantity > 1) {
+                            selectedProduct.quantity--;
+                        } else {
+                            allProducts = allProducts.filter(
+                                p => !(p.title === title && p.color === color && p.size === size)
+                            );
+                        }
+                    }
+                    updateCart();
+                };
+
+                const deleteProductFromCart = (product) => {
+                    const { title, color, size } = getProductDetails(product);
+
+                    allProducts = allProducts.filter(
+                        p => !(p.title === title && p.color === color && p.size === size)
+                    );
+                    updateCart();
+                };
+
+                const showProductsInModal = () => {
+                    const productosCarrito = obtenerProductosDelCarrito();
+                    const tbody = document.querySelector('#tablaProductosCarrito tbody');
+                    tbody.innerHTML = '';
+
+                    productosCarrito.forEach(producto => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                                            <td>${producto.title}</td>
+                                            <td>${producto.color}</td>
+                                            <td>${producto.size}</td>
+                                            <td>${producto.price}</td>
+                                            <td>${producto.quantity}</td>
+                                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    calcularTotalPedido();
+                };
+
+                const calculateShippingCost = (ciudad) => {
+                    switch (ciudad) {
+                        case 'Medellin': return 12000;
+                        case 'Bogota': return 15000;
+                        case 'Cali': return 9500;
+                        case 'Cartagena':
+                        case 'Barranquilla': return 17000;
+                        default: return 0;
+                    }
+                };
+
+                const calcularTotalPedido = () => {
+                    const productosCarrito = obtenerProductosDelCarrito();
+                    let costoProducto = 0;
+
+                    productosCarrito.forEach(producto => {
+                        costoProducto += producto.quantity * parseFloat(producto.price.replace(/[^\d.-]/g, ''));
+                    });
+
+                    const ciudad = document.querySelector('#ciudad').value;
+                    const costoEnvio = calculateShippingCost(ciudad);
+                    const totalPedido = costoProducto + costoEnvio;
+
+                    document.querySelector('#CostoPedido').value = costoProducto;
+                    document.querySelector('#TotalPedido').value = totalPedido;
+                };
+
+                const obtenerProductosDelCarrito = () => {
+                    return allProducts;
+                };
+
+                // Event Listeners
+                productsList.addEventListener('click', e => {
+                    if (e.target.classList.contains('btn-add-cart')) {
+                        const product = e.target.closest('.item');
+                        const title = product.querySelector('h2').textContent;
+                        const price = product.querySelector('.price').textContent.split(': ')[1];
+                        const color = product.querySelector('.color.selected').dataset.color;
+                        const size = product.querySelector('.size.selected').dataset.size;
+
+                        addProductToCart(title, price, color, size);
+                    }
+                });
+
+                document.querySelector('.btn-add-cart-modal').addEventListener('click', () => {
+                    const title = document.getElementById('modal-product-name').textContent;
+                    const price = document.getElementById('modal-product-price').textContent.split(': ')[1];
+                    const color = document.querySelector('#modal-product-color .selected').dataset.color;
+                    const size = document.querySelector('#modal-product-size .selected').dataset.size;
+
+                    addProductToCart(title, price, color, size);
+                });
+
+                rowProduct.addEventListener('click', e => {
+                    if (e.target.classList.contains('icon-close')) {
+                        const product = e.target.parentElement;
+                        deleteProductFromCart(product);
+                    } else if (e.target.classList.contains('quantity-increase')) {
+                        const product = e.target.closest('.cart-product');
+                        handleQuantityChange(product, true);
+                    } else if (e.target.classList.contains('quantity-decrease')) {
+                        const product = e.target.closest('.cart-product');
+                        handleQuantityChange(product, false);
+                    }
+                });
+
+                document.querySelector('#ciudad').addEventListener('change', calcularTotalPedido);
+
+                $('#btnComprar').click(() => {
+                    showProductsInModal();
+                    $('#crearPedidoModal').modal('show');
+                });
+            });
+        </script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.btn-details').on('click', function () {
+                    const idProducto = $(this).data('id');
+                    const nombre = $(this).data('nombre');
+                    const precio = $(this).data('precio');
+                    const foto = $(this).data('foto');
+
+                    $('#modal-product-image').attr('src', foto);
+                    $('#modal-product-name').text(nombre);
+                    $('#modal-product-price').text('Precio: ' + precio);
+
+                    $.ajax({
+                        url: '@Url.Action("ObtenerDetallesProducto", "Home")',
+                        type: 'GET',
+                        data: { idProducto: idProducto },
+                        success: function (detalles) {
+                            let colores = '';
+                            let tallas = '';
+
+                            detalles.forEach(detalle => {
+                                if (detalle.color) {
+                                    colores += `<li class="color-item" data-color="${detalle.color}">${detalle.color}</li>`;
+                                }
+                                if (detalle.talla) {
+                                    tallas += `<li class="size-item" data-size="${detalle.talla}">${detalle.talla}</li>`;
+                                }
+                            });
+
+                            $('#modal-product-color').html(colores);
+                            $('#modal-product-size').html(tallas);
+
+                            $('.color-item').on('click', function () {
+                                $('.color-item').removeClass('selected');
+                                $(this).addClass('selected');
+                            });
+
+                            $('.size-item').on('click', function () {
+                                $('.size-item').removeClass('selected');
+                                $(this).addClass('selected');
+                            });
+                        },
+                        error: function (error) {
+                            console.error('Error al obtener los detalles del producto:', error);
+                        }
+                    });
+
+                    $('#productModal').modal('show');
+                });
+
+                $('.btn-add-cart-modal').on('click', function () {
+                    const title = $('#modal-product-name').text();
+                    const price = $('#modal-product-price').text().split(': ')[1];
+                    const color = $('#modal-product-color .selected').data('color');
+                    const size = $('#modal-product-size .selected').data('size');
+
+                    if (!color) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Selecciona un color',
+                            text: 'Debes seleccionar un color para añadir el producto al carrito.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        return; // Detiene la ejecución del siguiente código
+                    }
+
+                    if (!size) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Selecciona una talla',
+                            text: 'Debes seleccionar una talla para añadir el producto al carrito.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        return; // Detiene la ejecución del siguiente código
+                    }
+
+                    addProductToCart(title, price, color, size);
+                });
+
+                function addProductToCart(title, price, color, size) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Añadido al carrito',
+                        text: `${title} ha sido añadido al carrito`,
+                        timer: 1000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        $('#productModal').modal('hide');
+                    });
+                }
+            });
+        </script>
+
+
+        <script>
+            const swiper = new Swiper('.swiper', {
+                pagination: {
+                    el: '.swiper-pagination',
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                autoplay: {
+                    delay: 4000,
+                },
+            });
+        </script>
+
+    </div>
+</body>
+</html>

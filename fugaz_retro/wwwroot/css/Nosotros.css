@@ -1,0 +1,230 @@
+﻿.UserBody {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    right: 8%;
+   
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7dfd4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+/* Estilos adicionales si es necesario */
+.page-title {
+    text-align: center; /* Alineación centrada */
+    font-size: 36px; /* Tamaño de fuente grande */
+    color: #333; /* Color del texto */
+    margin-top: 40px; /* Espacio superior */
+    text-transform: uppercase; /* Convertir texto en mayúsculas */
+    font-family: 'Arial', sans-serif; /* Fuente */
+    letter-spacing: 2px; /* Espaciado entre letras */
+}
+
+.typed-text {
+    display: inline-block;
+    overflow: hidden; /* Ocultar texto que aún no se ha mostrado */
+    border-right: 2px solid #333; /* Efecto de cursor */
+    white-space: nowrap; /* Evitar saltos de línea */
+}
+
+.cursor {
+    display: inline-block;
+    width: 8px; /* Ancho del cursor */
+    height: 24px; /* Altura del cursor */
+    background-color: #333; /* Color del cursor */
+    animation: blink-caret 0.7s step-end infinite; /* Animación de parpadeo */
+}
+
+@keyframes blink-caret {
+    from, to {
+        border-color: transparent;
+    }
+
+    50% {
+        border-color: #333;
+    }
+}
+
+/* Estilo para la sección creativa */
+.creative-section {
+    background-color: #f8f8f8; /* Color de fondo suave */
+    padding: 40px; /* Espaciado interno */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    text-align: center; /* Alineación centrada */
+    margin-bottom: 40px; /* Margen inferior */
+}
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 600px) {
+    .creative-section {
+    padding: 20px; /* Reducir el espaciado interno */
+    }
+
+    .section-title {
+        font-size: 24px; /* Reducir tamaño del título */
+        margin-bottom: 15px; /* Reducir espacio inferior */
+    }
+
+    .section-content {
+        font-size: 16px; /* Reducir tamaño del texto */
+        line-height: 1.4; /* Reducir interlineado */
+    }
+}
+
+/* Estilos para la sección de fabricación de productos */
+.fabricacion {
+    text-align: center; /* Centrar los elementos horizontalmente */
+    margin-top: 20px; /* Espacio superior */
+}
+
+    .fabricacion h2 {
+        font-size: 28px;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+        text-transform: uppercase;
+    }
+
+.fabricacion_item {
+    position: relative;
+    display: inline-block;
+    width: 240px; /* Ancho del contenedor ajustado */
+    height: 340px; /* Altura del contenedor ajustada para alinear el contenido */
+    perspective: 1000px; /* Propiedad para la perspectiva del efecto de 3D */
+    margin: 0 20px 40px; /* Márgenes ajustados entre cada item */
+    overflow: hidden; /* Ocultar cualquier contenido que sobresalga */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff; /* Fondo blanco */
+}
+
+    .fabricacion_item img {
+        width: 100%;
+        height: 100%; /* Ajustar la imagen al 100% del contenedor */
+        object-fit: cover; /* Ajustar la imagen manteniendo la proporción */
+        transition: transform 0.5s ease; /* Transición suave para el efecto de volteo */
+        border-radius: 8px;
+    }
+
+    .fabricacion_item:hover img {
+        transform: rotateY(180deg); /* Rotación al pasar el mouse */
+    }
+
+    .fabricacion_item .titulo-item {
+        position: absolute;
+        top: 20px; /* Posiciona el título arriba del contenedor */
+        left: 0;
+        width: 100%;
+        background-color: rgba(234, 188, 172, 0.9); /* Color de fondo semi-transparente */
+        padding: 10px;
+        box-sizing: border-box;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        z-index: 1; /* Asegura que el título esté sobre la imagen */
+    }
+
+    .fabricacion_item .descripcion {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        box-sizing: border-box;
+        color: #000; /* Color del texto blanco */
+        font-size: 16px;
+        line-height: 1.4;
+        text-align: center;
+        opacity: 0; /* Inicialmente invisible */
+        transition: opacity 0.3s ease; /* Transición suave de la opacidad */
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .fabricacion_item:hover .descripcion {
+        opacity: 1; /* Hacer visible al pasar el mouse */
+    }
+
+.titulo-item {
+    font-size: 25px; /* Tamaño de fuente más pequeño */
+    margin-top: 10px; /* Espacio superior */
+    color: #333; /* Color del texto */
+    font-family: 'Arial', sans-serif; /* Fuente */
+}
+
+/* Estilo para el contenedor de Misión y Visión */
+.mission-vision-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Estilo para las cards */
+.card {
+    background: linear-gradient(135deg, #f9dcd3, #eabcac);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .card::before {
+        content: '';
+        position: absolute;
+        top: -75px;
+        right: -75px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover::before {
+        transform: scale(1.5);
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+
+.card-header {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.card h2 {
+    font-size: 24px;
+    margin-bottom: 0;
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+.card-content {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    text-align: left;
+}
+
+    .card-content p {
+        margin-bottom: 0;
+    }

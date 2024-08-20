@@ -1,0 +1,53 @@
+﻿@model IEnumerable<fugaz_retro.Models.DetalleCompra>
+
+@{
+    ViewData["Title"] = "Detalle de Compra";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="tbl table-responsive">
+    <h1>Detalle de Compra</h1>
+    <div class="row mb-3">
+        <div class="col">
+            <a asp-action="Create" class="btn btn-success">Crear Compra<img src="/Images/agregar.png" height="24px" alt="Alternate Text" /></a>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered" id="Table">
+        <thead>
+            <tr>
+                <th>
+                    Fecha Compra
+                </th>
+                <th>
+                    Nombre Insumo
+                </th>
+                <th>
+                    Cantidad
+                </th>
+                <th>Precio unitario</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdCompraNavigation.FechaCompra)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdInsumoNavigation.NombreInsumo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdInsumoNavigation.Cantidad)
+                    </td>
+                    <td>
+                        @String.Format("{0:0.00}", item.PrecioUnitario)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!--Link-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="~/css/site.css" />

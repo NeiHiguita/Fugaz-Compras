@@ -1,0 +1,277 @@
+﻿@model IEnumerable<IGrouping<string, fugaz_retro.Models.Venta>>
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .cir {
+        margin-left: 80px;
+    }
+
+    .brcity {
+        margin-top: 0px;
+    }
+
+    .cpq {
+        height: 290px;
+    }
+
+    .pd {
+        padding: 15px;
+    }
+
+    .form-group-botones {
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .form-group select {
+        border-radius: 5px;
+    }
+
+    .form-control, .btn {
+        border-radius: 5px;
+    }
+</style>
+
+<body style="background: #ffffff; overflow-y: scroll;">
+    <div class="tbl">
+        <div class="container-fluid p-0">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h1 class="h3 mb-3"><strong>Bienvenidos a</strong> Fugaz Retro</h1>
+                </div>
+                <div class="col-md-6">
+                    <form id="filtroForm" method="get" class="form-inline">
+                        <div class="row w-100">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="month">Mes</label>
+                                    <select id="month" name="month" class="form-control">
+                                        <option value="">Seleccionar Mes</option>
+                                        @{
+                                            var cultureInfo = new System.Globalization.CultureInfo("es-ES");
+                                            var textInfo = cultureInfo.TextInfo;
+                                            var meses = cultureInfo.DateTimeFormat.MonthNames.Take(12).ToList();
+                                            for (int i = 1; i <= 12; i++)
+                                            {
+                                                <option value="@i">@textInfo.ToTitleCase(meses[i - 1])</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="year">Año</label>
+                                    <select id="year" name="year" class="form-control">
+                                        <option value="">Seleccionar Año</option>
+                                        @{
+                                            for (int i = DateTime.Now.Year; i >= 2024; i--)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 form-group-botones">
+                                <button type="submit" class="btn btn-primary">Buscar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr />
+        </div>
+        <div class="row pd">
+            <div class="col-md-6 cpq">
+                <h2>Ventas por Método de Pago</h2>
+                <canvas id="metodoPagoChart" class="cir"></canvas>
+            </div>
+            <div class="col-md-6 cpq">
+                <h2>Ventas por Ciudad</h2>
+                <canvas id="ciudadChart" class="cir"></canvas>
+            </div>
+            <div class="rr">
+                <div class="col-md-6">
+                    <h2>Ventas por Cliente</h2>
+                    <canvas id="ventasChart" width="400" height="200"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <h2>Ventas por Mes</h2>
+                    <canvas id="ventasMesChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Gráfica de ventas por cliente
+            var ctxVentas = document.getElementById('ventasChart').getContext('2d');
+            var labelsVentas = [];
+            var dataVentas = [];
+
+        @foreach (var cliente in ViewBag.VentasPorCliente)
+        {
+            <text>
+                    labelsVentas.push('@cliente.Cliente');
+                dataVentas.push(@cliente.Count);
+            </text>
+        }
+
+                    var ventasChart = new Chart(ctxVentas, {
+                type: 'bar',
+                data: {
+                    labels: labelsVentas,
+                    datasets: [{
+                        label: 'Número de Ventas por cliente',
+                        data: dataVentas,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Gráfica de ventas por mes
+            var ctxVentasMes = document.getElementById('ventasMesChart').getContext('2d');
+            var labelsVentasMes = [];
+            var dataVentasMes = [];
+
+        @foreach (var mes in ViewBag.VentasPorMes)
+        {
+            <text>
+                    labelsVentasMes.push('@mes.Mes.ToString("MMMM yyyy")');
+                dataVentasMes.push(@mes.Count);
+            </text>
+        }
+
+                    var ventasMesChart = new Chart(ctxVentasMes, {
+                type: 'line',
+                data: {
+                    labels: labelsVentasMes,
+                    datasets: [{
+                        label: 'Número de Ventas por Mes',
+                        data: dataVentasMes,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Gráfica de ventas por método de pago
+            var ctxMetodoPago = document.getElementById('metodoPagoChart').getContext('2d');
+            var labelsMetodoPago = [];
+            var dataMetodoPago = [];
+
+        @foreach (var metodo in ViewBag.VentasPorMetodoPago)
+        {
+            <text>
+                    labelsMetodoPago.push('@metodo.MetodoPago');
+                dataMetodoPago.push(@metodo.Count);
+            </text>
+        }
+
+                    var metodoPagoChart = new Chart(ctxMetodoPago, {
+                type: 'doughnut',
+                data: {
+                    labels: labelsMetodoPago,
+                    datasets: [{
+                        label: 'Método de Pago',
+                        data: dataMetodoPago,
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)'],
+                        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    }
+                }
+            });
+
+            // Gráfica de ventas por ciudad
+            var ctxCiudad = document.getElementById('ciudadChart').getContext('2d');
+            var labelsCiudad = [];
+            var dataCiudad = [];
+
+        @foreach (var ciudad in ViewBag.VentasPorCiudad)
+        {
+            <text>
+                    labelsCiudad.push('@ciudad.Ciudad');
+                dataCiudad.push(@ciudad.Count);
+            </text>
+        }
+
+                    var ciudadChart = new Chart(ctxCiudad, {
+                type: 'pie',
+                data: {
+                    labels: labelsCiudad,
+                    datasets: [{
+                        label: 'Número de Ventas',
+                        data: dataCiudad,
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 99, 132, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

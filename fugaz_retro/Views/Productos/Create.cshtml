@@ -1,0 +1,224 @@
+﻿@model fugaz_retro.Models.Producto
+
+@{
+    ViewData["Title"] = "Crear Producto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tbl">
+    <h1>Crear Producto</h1>
+    <hr />
+
+    <form asp-controller="Productos" asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="NombreProducto" class="control-label">Nombre Producto</label>
+                    <input asp-for="NombreProducto" class="form-control" />
+                    <span asp-validation-for="NombreProducto" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PrecioVenta" class="control-label">Precio venta</label>
+                    <input asp-for="PrecioVenta" class="form-control" />
+                    <span asp-validation-for="PrecioVenta" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="Foto" class="control-label">Foto Producto</label>
+                    <input type="file" class="form-control" name="Foto" id="Foto" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoriaProducto" class="control-label">Selecciona una categoría:</label>
+                    <select asp-for="CategoriaProducto" class="form-control" id="categoriaProducto">
+                        <option value="vestidos">Vestidos</option>
+                        <option value="faldas">Faldas</option>
+                        <option value="mom_pats">Mom Pats</option>
+                        <option value="conjuntos">Conjuntos</option>
+                        <option value="crop_tops">Crop Tops</option>
+                        <option value="shorts">Shorts</option>
+                        <option value="blusas">Blusas</option>
+                    </select>
+                    <span asp-validation-for="CategoriaProducto" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Estado" class="control-label">Estado</label>
+                    <select asp-for="Estado" class="form-control">
+                        <option value="">Seleccionar Estado</option>
+                        <option value="Disponible">Disponible</option>
+                        <option value="No Disponible">No Disponible</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <img class="imgproduct" id="FotoPreview" src="#" alt="Comprobante de Pago" />
+            </div>
+        </div>
+        <h4>Detalles del Producto</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <h5>Tallas</h5>
+                <table class="table table-striped table-bordered" id="tallasTable">
+                    <thead>
+                        <tr>
+                            <th>Talla</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select id="tallaProducto" class="form-control"></select>
+                            </td>
+                            <td><button type="button" class="btn btn-primary" onclick="addTalla()">Añadir Talla</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <h5>Colores</h5>
+                <table class="table table-striped table-bordered" id="coloresTable">
+                    <thead>
+                        <tr>
+                            <th>Color</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control" id="colorProducto" /></td>
+                            <td><button type="button" class="btn btn-primary" onclick="addColor()">Añadir Color</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="tallasHidden">
+            <input type="hidden" id="tallasHiddenInput" name="tallasHiddenInput" />
+        </div>
+        <div id="coloresHidden">
+            <input type="hidden" id="coloresHiddenInput" name="coloresHiddenInput" />
+        </div>
+        <div class="form-group-botones">
+            <button type="submit" class="btn btn-success">Crear</button>
+            <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const tallasNumericas = ["6", "8", "10", "12", "14", "16"];
+        const tallasTexto = ["XS", "S", "M", "L", "XL", "XXL"];
+        const categoriasTallasNumericas = ["faldas", "mom_pats", "shorts", "conjuntos"];
+
+        function actualizarOpcionesTalla() {
+            const categoria = $("#categoriaProducto").val();
+            const $tallaProducto = $("#tallaProducto");
+
+            $tallaProducto.empty();
+
+            if (categoriasTallasNumericas.includes(categoria)) {
+                tallasNumericas.forEach(talla => {
+                    $tallaProducto.append(new Option(talla, talla));
+                });
+            } else {
+                tallasTexto.forEach(talla => {
+                    $tallaProducto.append(new Option(talla, talla));
+                });
+            }
+        }
+
+        $(document).ready(function () {
+            actualizarOpcionesTalla();
+            $("#categoriaProducto").change(actualizarOpcionesTalla);
+        });
+
+        function addTalla() {
+            var talla = $("#tallaProducto").val();
+
+            if (talla.trim() === '') {
+                alert("Por favor ingrese una talla");
+                return;
+            }
+
+            var tallas = JSON.parse($("#tallasHiddenInput").val() || "[]");
+
+            if (tallas.some(detalle => detalle.Talla === talla)) {
+                alert("La talla ya ha sido agregada");
+                return;
+            }
+
+            var detalle = {
+                Talla: talla,
+                Color: ""
+            };
+
+            tallas.push(detalle);
+            $("#tallasHiddenInput").val(JSON.stringify(tallas));
+
+            var newRow = $("<tr>");
+            newRow.append("<td>" + talla + "</td>");
+            newRow.append("<td><button type='button' class='btn btn-danger' onclick='removeTalla(this)'>Eliminar</button></td>");
+
+            $("#tallasTable tbody").append(newRow);
+            $("#tallaProducto").val('');
+        }
+
+        function removeTalla(btn) {
+            var index = $(btn).closest("tr").index() - 1; 
+            var tallas = JSON.parse($("#tallasHiddenInput").val() || "[]");
+            tallas.splice(index, 1); 
+            $("#tallasHiddenInput").val(JSON.stringify(tallas));
+            $(btn).closest("tr").remove(); 
+        }
+
+        function addColor() {
+            var color = $("#colorProducto").val();
+
+            if (color.trim() === '') {
+                alert("Por favor ingrese un color");
+                return;
+            }
+
+            var colores = JSON.parse($("#coloresHiddenInput").val() || "[]");
+
+            if (colores.some(detalle => detalle.Color === color)) {
+                alert("El color ya ha sido agregado");
+                return;
+            }
+
+            var detalle = {
+                Talla: "",
+                Color: color
+            };
+
+            colores.push(detalle);
+            $("#coloresHiddenInput").val(JSON.stringify(colores));
+
+            var newRow = $("<tr>");
+            newRow.append("<td>" + color + "</td>");
+            newRow.append("<td><button type='button' class='btn btn-danger' onclick='removeColor(this)'>Eliminar</button></td>");
+
+            $("#coloresTable tbody").append(newRow);
+            $("#colorProducto").val('');
+        }
+
+        function removeColor(btn) {
+            var index = $(btn).closest("tr").index() - 1;
+            var colores = JSON.parse($("#coloresHiddenInput").val() || "[]");
+            colores.splice(index, 1);
+            $("#coloresHiddenInput").val(JSON.stringify(colores));
+            $(btn).closest("tr").remove();
+        }
+
+        $('input[type="file"]').change(function (e) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#FotoPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(this.files[0]);
+        });
+    </script>
+}

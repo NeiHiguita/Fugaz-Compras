@@ -1,0 +1,16 @@
+﻿@model fugaz_retro.Models.Producto
+
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<h1>Detalles del Producto</h1>
+
+<div>
+    <h4>Nombre: @Html.DisplayFor(model => model.NombreProducto)</h4>
+    <h4>Precio de Venta: @Html.DisplayFor(model => model.PrecioVenta)</h4>
+</div>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.IdProducto">Editar</a> |
+    <a asp-action="Index">Volver al Índice</a>
+</p>

@@ -1,0 +1,277 @@
+﻿@model fugaz_retro.Models.PerdidaInsumo
+
+@{
+    ViewData["Title"] = "Crear Perdida de Insumo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tbl">
+    <h1>Crear Perdida de Insumo</h1>
+    <hr />
+    <form asp-action="Create" novalidate id="perdidaInsumoForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <!-- Columna 1 -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="TipoInsumo" class="control-label">Tipo Insumo</label>
+                    <select asp-for="TipoInsumo" class="form-control" id="filtroTipoInsumo">
+                        <option value="">Selecciona</option>
+                        <option value="Insumo Controlados">Insumo Controlados</option>
+                        <option value="Insumo Gasto">Insumo Gasto</option>
+                    </select>
+                    <span asp-validation-for="TipoInsumo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="IdInsumo" class="control-label">Insumo</label>
+                    <select asp-for="IdInsumo" class="form-control" id="idInsumo">
+                        <option value="">Selecciona el insumo</option>
+                    </select>
+                    <span asp-validation-for="IdInsumo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="UnidadMedida" class="control-label">Unidad de Medida</label>
+                    <select asp-for="UnidadMedida" class="form-control" id="unidadMedida">
+                        <option value="" disabled selected>Selecciona la unidad de medida</option>
+                        <option value="Metros">Metros</option>
+                        <option value="Centimetros">Centimetros</option>
+                        <option value="Yardas">Yardas</option>
+                        <option value="Unidad">Unidad</option>
+                        <option value="Docena">Docena</option>
+                    </select>
+                    <span asp-validation-for="UnidadMedida" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Columna 2 -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Cantidad" class="control-label">Cantidad</label>
+                    <input asp-for="Cantidad" class="form-control" id="cantidad" />
+                    <span asp-validation-for="Cantidad" class="text-danger"></span>
+                    <small id="cantidadDisponible" class="form-text text-muted"></small>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Fecha" class="control-label">Fecha</label>
+                    <input asp-for="Fecha" class="form-control" id="fechaInsumo" type="date" />
+                    <span asp-validation-for="Fecha" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="form-group-botones">
+            <button type="submit" class="btn btn-success" id="submitBtn">Crear</button>
+            <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <!-- Incluye SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            var $filtroTipoInsumo = $('#filtroTipoInsumo');
+            var $idInsumo = $('#idInsumo');
+            var $cantidad = $('#cantidad');
+            var $unidadMedida = $('#unidadMedida');
+            var $fechaInsumo = $('#fechaInsumo');
+            var stockDisponible = 0; // Variable global para el stock disponible
+
+            // Función para actualizar la cantidad disponible
+            function actualizarCantidadDisponible() {
+                var idInsumoSeleccionado = $idInsumo.val();
+                if (idInsumoSeleccionado) {
+                    $.ajax({
+                        url: '@Url.Action("GetStock", "PerdidaInsumos")',
+                        type: 'GET',
+                        data: { id: idInsumoSeleccionado },
+                        success: function (data) {
+                            stockDisponible = data.stock;
+                            $('#cantidadDisponible').text('Cantidad disponible: ' + stockDisponible);
+                        },
+                        error: function () {
+                            $('#cantidadDisponible').text('Error al obtener la cantidad disponible.');
+                        }
+                    });
+                } else {
+                    $('#cantidadDisponible').text('');
+                }
+            }
+
+            // Función para cargar insumos basados en la categoría seleccionada
+            $filtroTipoInsumo.change(function () {
+                var tipoInsumo = $(this).val();
+                if (tipoInsumo) {
+                    $.ajax({
+                        url: '@Url.Action("FiltrarInsumosPorCategoria", "PerdidaInsumos")',
+                        type: 'GET',
+                        data: { categoria: tipoInsumo },
+                        success: function (insumos) {
+                            $idInsumo.empty();
+                            $idInsumo.append('<option value="">Selecciona el insumo</option>');
+                            $.each(insumos, function (index, insumo) {
+                                $idInsumo.append('<option value="' + insumo.idInsumo + '">' + insumo.nombreInsumo + '</option>');
+                            });
+                            actualizarCantidadDisponible();
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Hubo un problema al filtrar los insumos. Intenta de nuevo.',
+                                confirmButtonText: 'Entendido'
+                            });
+                        }
+                    });
+                } else {
+                    $idInsumo.empty();
+                    $idInsumo.append('<option value="">Selecciona el insumo</option>');
+                }
+            });
+
+            // Actualizar la cantidad disponible cuando se selecciona un insumo
+            $idInsumo.change(actualizarCantidadDisponible);
+
+            // Funciones para obtener la fecha de hoy y la fecha límite
+            function obtenerFechaHoy() {
+                var hoy = new Date();
+                var dia = hoy.getDate();
+                var mes = hoy.getMonth() + 1;
+                var año = hoy.getFullYear();
+
+                if (dia < 10) dia = '0' + dia;
+                if (mes < 10) mes = '0' + mes;
+
+                return año + '-' + mes + '-' + dia;
+            }
+
+            function obtenerFechaLimite() {
+                var hoy = new Date();
+                hoy.setDate(hoy.getDate() - 5);
+                var dia = hoy.getDate();
+                var mes = hoy.getMonth() + 1;
+                var año = hoy.getFullYear();
+
+                if (dia < 10) dia = '0' + dia;
+                if (mes < 10) mes = '0' + mes;
+
+                return año + '-' + mes + '-' + dia;
+            }
+
+            var fechaHoy = obtenerFechaHoy();
+            var fechaLimite = obtenerFechaLimite();
+
+            $fechaInsumo.attr('max', fechaHoy);
+            $fechaInsumo.attr('min', fechaLimite);
+            $fechaInsumo.val(fechaHoy);
+
+            // Validación al enviar el formulario
+            $('#perdidaInsumoForm').submit(function (e) {
+                e.preventDefault();
+
+                var tipoInsumoSeleccionado = $filtroTipoInsumo.val();
+                var insumoSeleccionado = $idInsumo.val();
+                var cantidadIngresada = parseFloat($cantidad.val()); // Asegúrate de usar parseFloat
+                var unidadSeleccionada = $unidadMedida.val();
+                var fechaIngresada = $fechaInsumo.val();
+
+                // Validaciones
+                if (!tipoInsumoSeleccionado) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Por favor, selecciona un tipo de insumo.',
+                        confirmButtonText: 'Entendido'
+                    });
+                    return;
+                }
+
+                if (!insumoSeleccionado) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Por favor, selecciona un insumo.',
+                        confirmButtonText: 'Entendido'
+                    });
+                    return;
+                }
+
+                if (!unidadSeleccionada) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Por favor, selecciona una unidad de medida.',
+                        confirmButtonText: 'Entendido'
+                    });
+                    return;
+                }
+
+                if (isNaN(cantidadIngresada) || cantidadIngresada <= 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Por favor, ingrese una cantidad válida.',
+                        confirmButtonText: 'Entendido'
+                    });
+                    return;
+                }
+
+                if (cantidadIngresada > stockDisponible) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'La cantidad ingresada excede el stock disponible.',
+                        confirmButtonText: 'Entendido'
+                    });
+                    return;
+                }
+
+                if (new Date(fechaIngresada) < new Date(fechaLimite) || new Date(fechaIngresada) > new Date(fechaHoy)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'La fecha ingresada no está dentro del rango permitido.',
+                        confirmButtonText: 'Entendido'
+                    });
+                    return;
+                }
+
+                // Enviar el formulario mediante AJAX
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: 'La pérdida de insumo se ha registrado exitosamente.',
+                            confirmButtonText: 'Entendido'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '@Url.Action("Index", "PerdidaInsumos")'; // Redirige a la página de índice o donde desees
+                            }
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema al registrar la pérdida de insumo. Intenta de nuevo.',
+                            confirmButtonText: 'Entendido'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

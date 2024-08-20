@@ -1,0 +1,263 @@
+﻿html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+.alinmodal{
+    margin-top:100px;
+}
+html {
+    position: relative;
+    min-height: 100%;
+}
+.rr{
+    display:flex;
+    margin-top:80px;
+}
+body {
+    margin-bottom: 60px;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #eabcac, #ffffff);
+    margin: 0;
+    padding: 0;
+}
+.tbl {
+    background-color: #ffffff;
+    border-radius: 15px;
+    width: auto;
+    height: auto;
+    padding: 20px;
+    margin-left: 4.5%;
+    margin-top: 20px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    max-height: 560px; /* Ajusta esta altura según sea necesario */
+    overflow-y: auto; /* Añade una barra de desplazamiento vertical */
+    overflow-x: hidden; /* Oculta la barra de desplazamiento horizontal, si no se necesita */
+    position: relative; /* Necesario para que los pseudoelementos se posicionen correctamente */
+}
+    .tbl::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .tbl::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .tbl::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+    }
+.imgproduct {
+    max-width: 260px;
+    max-height: 260px;
+    display: none;
+    margin-left: 140px;
+    margin-top: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+}
+body {
+    margin: 0;
+    padding: 0;
+}
+.dashboard-menu {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    padding-top: 20px;
+    background-color: white;
+    border-right: 1px solid #dee2e6;
+    margin-top: 0px;
+    height: 92%;
+    position: fixed;
+    width: 260px;
+    overflow-y: auto;
+    overflow-x:hidden;
+    border-radius: 5px; /* Agregamos un borde redondeado */
+}
+    .dashboard-menu ul {
+        padding-left: 0;
+        list-style: none;
+        margin: 0; /* Eliminamos el margen */
+    }
+    .dashboard-menu li {
+        margin-bottom: 10px; /* Aumentamos el margen entre elementos */
+    }
+    .dashboard-menu a {
+        display: block;
+        padding: 10px 15px;
+        color: #000;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+        .dashboard-menu a:hover {
+            background-color: #f5f5f5; /* Cambiamos el color de fondo al pasar el mouse */
+        }
+
+.dashboard-content {
+    margin-left: 250px;
+    padding: 20px;
+    margin-top: 56px;
+}
+
+/* Agregamos un margen al cuerpo del dashboard */
+.container {
+    margin-top: 20px;
+}
+
+/* Alineamos el contenido del cuerpo del dashboard */
+.main {
+    text-align: center;
+}
+
+/* Ajustamos el tama o de las cajas del men  */
+.dropdown-menu {
+    width: 100%; /* Ancho completo */
+    max-width: 260px; /* Tama o m ximo */
+}
+
+    .dropdown-menu a {
+        padding: 10px 15px;
+    }
+
+    .dropdown-menu li:last-child a {
+        border-bottom: none; /* Eliminamos el borde inferior del  ltimo elemento */
+    }
+
+.form-check-input[type="checkbox"] {
+    background-color: #dddddd;
+    border-color: #000000;
+}
+
+    .form-check-input[type="checkbox"]:checked {
+        background-color: #28a745;
+        border-color: #000000;
+    }
+
+    .form-check-input[type="checkbox"]:not(:checked) {
+        background-color: #e5e5e5;
+        border-color: #000000;
+    }
+
+.form-check-label {
+    color: #000000;
+}
+
+.tblsr {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.cntr {
+    text-align: center;
+}
+
+.btn-sm.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    z-index: 1000;
+}
+
+    .profile-options li {
+        list-style: none;
+    }
+
+        .profile-options li a {
+            display: block;
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
+        }
+
+            .profile-options li a:hover {
+                background-color: #f5f5f5;
+            }
+.UserBod {
+    height: 80%;
+    width: 126.3%;
+    margin-left: -189px;
+    top: 80px;
+    position: relative;
+}
+
+.footer {
+    background: linear-gradient(to bottom, white, #e7bca1);
+    color: #000;
+    padding: 20px 0;
+}
+
+    .footer a {
+        color: #000;
+        text-decoration: none;
+    }
+
+        .footer a:hover {
+            color: #343a40;
+            text-decoration: none;
+        }
+
+.footer-images {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.footer-img {
+    margin: 5px 0;
+    height: 40px;
+    transition: transform 0.3s;
+}
+
+    .footer-img:hover {
+        transform: scale(1.1);
+    }
+
+.logo-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    animation: heartbeat 1.5s infinite;
+}
+
+.container-fluid {
+    padding: 0 15px;
+}
+
+.btn-hover-grow {
+    transition: transform 0.3s;
+}
+
+    .btn-hover-grow:hover {
+        transform: scale(1.1);
+    }
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}

@@ -1,0 +1,50 @@
+﻿@model fugaz_retro.Models.DetalleInsumo
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="tbl">
+
+<h1>Create</h1>
+
+<h4>DetalleInsumo</h4>
+<hr />
+<div class="row">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                    <div class="col-sm-6">
+                        <!-- Campo oculto para la clave primaria -->
+            <input type="hidden" asp-for="IdDetalleInsumo" />
+
+            <div class="form-group">
+                <label asp-for="IdDetalleProducto" class="control-label"></label>
+                <select asp-for="IdDetalleProducto" class="form-control" asp-items="ViewBag.IdDetalleProducto"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdInsumo" class="control-label"></label>
+                <select asp-for="IdInsumo" class="form-control" asp-items="ViewBag.IdInsumo"></select>
+            </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                <label asp-for="Cantidad" class="control-label"></label>
+                <input asp-for="Cantidad" class="form-control" />
+                <span asp-validation-for="Cantidad" class="text-danger"></span>
+            </div>
+                    </div>
+                <div class="form-group">
+                    <br />
+                    <input type="submit" value="Crear" class="btn btn-sm btn-success" />
+                        <a asp-action="Index" class="btn btn-sm btn-secondary">Regresar</a>
+                </div>
+                </div>
+        </form>
+</div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

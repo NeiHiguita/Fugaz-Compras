@@ -1,0 +1,36 @@
+﻿@model fugaz_retro.Models.PerdidaInsumo
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="tbl">
+    <h1>Detalles Perdida de Insumo</h1>
+<div>
+    <hr />
+    <dl class="row">
+            <dt class="col-sm-2">
+               Nombre Insumo
+            </dt>
+            <dt class="col-sm-10">
+                @Html.DisplayFor(model=> model.IdInsumoNavigation.NombreInsumo)
+            </dt>
+            <dt class = "col-sm-2">
+                Cantidad
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Cantidad)
+            </dd>
+            <dt class = "col-sm-2">
+                Fecha
+            </dt>
+            <dd class = "col-sm-10">
+                @Model.Fecha.ToString("dd/MM/yyyy")
+            </dd>
+    </dl>
+</div>
+<div>
+        <a asp-action="Index" class="btn btn-sm btn-secondary">Regresar</a>
+
+</div>

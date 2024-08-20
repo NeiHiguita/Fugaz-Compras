@@ -1,0 +1,35 @@
+@model fugaz_retro.Models.Compra
+
+@{
+    ViewData["Title"] = "Eliminar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-danger">Eliminar Compra</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">¿Estás seguro de que quieres eliminar esta compra?</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.FechaCompra)</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.FechaCompra)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Subtotal)</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.Subtotal)</dd>
+            @* <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Iva)</dt> *@
+@*             <dd class="col-sm-10">@Html.DisplayFor(model => model.Iva)</dd> *@
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Descuento)</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.Descuento)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.PrecioTotal)</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.PrecioTotal)</dd>
+            <dt class="col-sm-2">@Html.DisplayNameFor(model => model.IdProveedorNavigation)</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.IdProveedorNavigation.TipoProveedor)</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" class="mt-3">
+    <input type="hidden" asp-for="IdCompra" />
+    <button type="submit" class="btn btn-danger mr-2"><i class="fas fa-trash-alt"></i> Confirmar Eliminación</button>
+    <a asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver al Listado</a>
+</form>

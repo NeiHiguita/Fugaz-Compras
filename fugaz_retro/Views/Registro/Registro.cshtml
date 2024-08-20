@@ -1,0 +1,31 @@
+﻿@model Usuario
+
+<form asp-action="Registro">
+    <div class="form-group">
+        <label asp-for="NombreUsuario"></label>
+        <input asp-for="NombreUsuario" class="form-control" />
+        <span asp-validation-for="NombreUsuario" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Correo"></label>
+        <input asp-for="Correo" class="form-control" />
+        <span asp-validation-for="Correo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Contraseña"></label>
+        <input asp-for="Contraseña" class="form-control" />
+        <span asp-validation-for="Contraseña" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Document"></label>
+        <input asp-for="Document" class="form-control" />
+        <span asp-validation-for="Document" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input asp-for="IdRol" class="d-none" value="7" />
+    </div>
+    <div class="form-group">
+        <input asp-for="Estado" class="d-none" value="true"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
